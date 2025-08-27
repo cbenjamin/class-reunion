@@ -4,7 +4,7 @@
   <picture>
     {{-- Default / light logo --}}
     <img
-      src="{{ Vite::asset('resources/images/logo.svg') }}"
+      src="{{ Vite::asset('public/images/logo.svg') }}"
       alt="{{ config('app.name') }}"
       class="h-8 w-auto sm:h-9"
       loading="eager"
