@@ -16,5 +16,11 @@ class Photo extends Model
         'is_featured' => 'boolean',
     ];
 
-    public function user() { return $this->belongsTo(User::class); }
+    public function user() { 
+        return $this->belongsTo(User::class); 
+    }
+
+    public function reactions(){
+        return $this->hasMany(\App\Models\PhotoReaction::class);
+    }
 }

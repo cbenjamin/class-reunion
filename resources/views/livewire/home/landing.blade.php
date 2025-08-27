@@ -81,28 +81,60 @@
       <p class="text-sm text-gray-500">Approved photos from classmates</p>
     </div>
 
-    <div wire:poll.30s="refreshPhotos"
-         class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
-      @foreach($photos as $i => $p)
-        @php $url = Storage::disk($p->disk)->url($p->path); @endphp
-        <figure class="break-inside-avoid mb-4">
-          <button type="button"
-                  class="block w-full text-left"
-                  @click="openAt({{ $i }})"
-                  aria-label="Open photo">
-            <img src="{{ $url }}" alt="{{ $p->caption ?? 'Reunion photo' }}"
-                 class="w-full rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
-                 loading="lazy">
-          </button>
-          @if($p->caption)
-            <figcaption class="mt-2 text-xs text-gray-600">{{ $p->caption }}</figcaption>
-          @endif
-        </figure>
-      @endforeach
-      @if($photos->isEmpty())
-        <div class="text-gray-600 text-sm">No approved photos yet. Be the first to upload!</div>
+
+<div class="masonry masonry-1 sm:masonry-2 lg:masonry-3 xl:masonry-4" wire:poll.30s="refreshPhotos">
+  @foreach($photos as $i => $p)
+    @php $url = Storage::disk($p->disk)->url($p->path); $photoId = $p->id; @endphp
+
+    <figure  id="photo-{{ $photoId }}" class="avoid-column-break mb-4" wire:key="photo-{{ $photoId }}">
+      <button type="button" class="block w-full text-left" @click="openAt({{ $i }})" aria-label="Open photo">
+        <img src="{{ $url }}" alt="{{ $p->caption ?? 'Reunion photo' }}"
+             class="w-full h-auto rounded-xl shadow-md hover:shadow-lg transition duration-300"
+             loading="lazy">
+      </button>
+
+      @if($p->caption)
+        <figcaption class="mt-2 text-xs text-gray-600">{{ $p->caption }}</figcaption>
       @endif
-    </div>
+
+      {{-- Reactions --}}
+@php
+  $rxEmoji = ['like'=>'👍','love'=>'❤️','laugh'=>'😂','wow'=>'😮','sad'=>'😢','party'=>'🎉'];
+  // Pre-compute counts & "mine" using your existing arrays (or query if you prefer)
+  $photoId = $p->id;
+  $mine    = $myReactions[$photoId] ?? null;
+@endphp
+
+<div class="mt-2 select-none">
+  <div class="flex flex-wrap items-center gap-2">
+    @foreach($rxEmoji as $type => $icon)
+      @php $count = $reactionCounts[$photoId][$type] ?? 0; @endphp
+
+      <form method="POST" action="{{ route('photos.react', $photoId) }}" class="inline">
+        @csrf
+        <input type="hidden" name="type" value="{{ $type }}">
+        <button type="submit"
+                class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs border transition
+                       {{ $mine === $type ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300' }}">
+          <span aria-hidden="true">{{ $icon }}</span>
+          @if($count > 0)
+            <span>{{ $count }}</span>
+          @endif
+        </button>
+      </form>
+    @endforeach
+
+    @guest
+      <a href="{{ route('login') }}" class="ml-1 text-[11px] text-gray-500 hover:text-gray-700">Log in to react</a>
+    @endguest
+  </div>
+</div>    </figure>
+  @endforeach
+
+  @if($photos->isEmpty())
+    <div class="text-gray-600 text-sm">No approved photos yet. Be the first to upload!</div>
+  @endif
+</div>
 
     <div class="mt-8 text-center">
       @auth

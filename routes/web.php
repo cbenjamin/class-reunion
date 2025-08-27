@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PhotoReactionController;
+
 use Illuminate\Support\Facades\Route;
 
 use App\Livewire\Invite\RequestForm;
@@ -31,6 +33,7 @@ Route::view('/pending-approval', 'auth.pending-approval')->name('pending-approva
 Route::middleware(['auth','approved'])->group(function () {
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
     Route::get('/photos', PhotosManager::class)->name('photos.index');
+    Route::post('/photos/{photo}/react', [PhotoReactionController::class, 'store'])->name('photos.react');
 });
 
 // Admin moderation (auth only; gate inside components)
