@@ -1,6 +1,18 @@
 <nav class="bg-white border-b">
   <div class="mx-auto max-w-7xl px-4 py-3 flex items-center gap-4">
-    <a href="{{ url('/') }}" class="font-semibold">Class of '06 - 20 Year Reunion</a>
+<a href="{{ route('home') }}" class="flex items-center gap-2" aria-label="{{ config('app.name') }}">
+  <picture>
+    {{-- Default / light logo --}}
+    <img
+      src="{{ Vite::asset('resources/images/logo.svg') }}"
+      alt="{{ config('app.name') }}"
+      class="h-8 w-auto sm:h-9"
+      loading="eager"
+      decoding="async"
+    >
+  </picture>
+  <span class="sr-only">{{ config('app.name') }}</span>
+</a>
     <!--<a href="{{ route('invite.create') }}" class="text-sm text-gray-600 hover:text-gray-900">Request Invitation</a>-->
 
     @auth
