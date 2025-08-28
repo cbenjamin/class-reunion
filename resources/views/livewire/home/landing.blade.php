@@ -82,53 +82,83 @@
     </div>
 
 
-<div class="masonry masonry-1 sm:masonry-2 lg:masonry-3 xl:masonry-4" wire:poll.30s="refreshPhotos">
+<div class="masonry masonry-1 sm:masonry-2 lg:masonry-3 xl:masonry-4" wire:poll.30s.keep-alive="refreshPhotos">
   @foreach($photos as $i => $p)
     @php $url = Storage::disk($p->disk)->url($p->path); $photoId = $p->id; @endphp
 
-    <figure  id="photo-{{ $photoId }}" class="avoid-column-break mb-4" wire:key="photo-{{ $photoId }}">
-      <button type="button" class="block w-full text-left" @click="openAt({{ $i }})" aria-label="Open photo">
-        <img src="{{ $url }}" alt="{{ $p->caption ?? 'Reunion photo' }}"
-             class="w-full h-auto rounded-xl shadow-md hover:shadow-lg transition duration-300"
-             loading="lazy">
-      </button>
-
-      @if($p->caption)
-        <figcaption class="mt-2 text-xs text-gray-600">{{ $p->caption }}</figcaption>
-      @endif
-
-      {{-- Reactions --}}
 @php
   $rxEmoji = ['like'=>'👍','love'=>'❤️','laugh'=>'😂','wow'=>'😮','sad'=>'😢','party'=>'🎉'];
-  // Pre-compute counts & "mine" using your existing arrays (or query if you prefer)
   $photoId = $p->id;
-  $mine    = $myReactions[$photoId] ?? null;
+  $initialCounts = $reactionCounts[$photoId] ?? [];
+  $mine = $myReactions[$photoId] ?? null;
 @endphp
 
-<div class="mt-2 select-none">
-  <div class="flex flex-wrap items-center gap-2">
-    @foreach($rxEmoji as $type => $icon)
-      @php $count = $reactionCounts[$photoId][$type] ?? 0; @endphp
+<figure id="photo-{{ $photoId }}" class="group avoid-column-break mb-4">
+  <button type="button" class="block w-full text-left"
+          @click="openAt({{ $i }})" aria-label="Open photo">
+    <img src="{{ Storage::disk($p->disk)->url($p->path) }}"
+         alt="{{ $p->caption ?? 'Reunion photo' }}"
+         class="w-full h-auto rounded-xl shadow-md hover:shadow-lg transition duration-300"
+         loading="lazy">
+  </button>
 
-      <form method="POST" action="{{ route('photos.react', $photoId) }}" class="inline">
-        @csrf
-        <input type="hidden" name="type" value="{{ $type }}">
-        <button type="submit"
-                class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs border transition
-                       {{ $mine === $type ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300' }}">
-          <span aria-hidden="true">{{ $icon }}</span>
-          @if($count > 0)
-            <span>{{ $count }}</span>
-          @endif
-        </button>
-      </form>
-    @endforeach
+  @if($p->caption)
+    <figcaption class="mt-2 text-xs text-gray-600">{{ $p->caption }}</figcaption>
+  @endif
 
-    @guest
-      <a href="{{ route('login') }}" class="ml-1 text-[11px] text-gray-500 hover:text-gray-700">Log in to react</a>
-    @endguest
+  {{-- Reaction bar: hover-to-show unless there are reactions / you reacted --}}
+@php
+  $photoId = $p->id;
+  $initialCounts = $reactionCounts[$photoId] ?? [];
+  $mine = $myReactions[$photoId] ?? null;
+@endphp
+
+<div class="relative mt-2 select-none"
+     wire:ignore
+     x-data="reactionBar({{ $photoId }}, @js($initialCounts), @js($mine))">
+
+  <div class="flex items-center gap-2">
+    {{-- Heart trigger (always visible) --}}
+    <button type="button"
+            @click.stop.prevent="togglePopover()"
+            :class="mine === 'love'
+                    ? 'bg-rose-600 text-white border-rose-600'
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'"
+            class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs border transition">
+      <span aria-hidden="true">❤️</span>
+      <span x-text="heartCount() || ''"></span>
+    </button>
+
+    {{-- Summary chips for other reactions with counts (or your selection) --}}
+    <template x-for="t in summaryTypes()" :key="t">
+      <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs border bg-white text-gray-700 border-gray-200">
+        <span x-text="icons[t]"></span>
+        <span x-text="counts[t] || 0"></span>
+      </span>
+    </template>
+
   </div>
-</div>    </figure>
+
+  {{-- Popover bar (all reactions) --}}
+  <div x-show="open" x-transition
+       @click.outside="close()"
+       class="absolute -top-2 translate-y-[-100%] left-0 z-20 rounded-xl border border-gray-200 bg-white shadow-lg px-2 py-1">
+    <div class="flex items-center gap-1">
+      <template x-for="t in types" :key="'opt-'+t">
+        <button type="button"
+                @click.stop.prevent="choose(t)"
+                :class="mine === t
+                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'"
+                class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs border transition">
+          <span x-text="icons[t]"></span>
+          <span x-text="counts[t] || ''"></span>
+        </button>
+      </template>
+    </div>
+  </div>
+</div>
+</figure>
   @endforeach
 
   @if($photos->isEmpty())
