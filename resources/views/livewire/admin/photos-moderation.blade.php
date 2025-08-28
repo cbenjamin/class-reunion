@@ -1,6 +1,6 @@
 
   <div class="max-w-7xl mx-auto px-4 py-10 space-y-8">
-    <h1 class="text-2xl font-bold">Photo Moderation</h1>
+    <h1 class="text-2xl font-bold">Memory Moderation</h1>
 
     <section>
       <h2 class="font-semibold mb-2">Pending</h2>
@@ -51,7 +51,7 @@
             </div>
           </div>
         @empty
-          <p class="text-sm text-gray-600">No approved photos yet.</p>
+          <p class="text-sm text-gray-600">No approved memories yet.</p>
         @endforelse
       </div>
     </section>

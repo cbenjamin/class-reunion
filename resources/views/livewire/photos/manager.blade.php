@@ -5,7 +5,7 @@
     @endif
 
     <div class="rounded-xl border p-4">
-      <h2 class="font-semibold mb-3">Upload a Photo</h2>
+      <h2 class="font-semibold mb-3">Upload a Memory</h2>
       <form wire:submit.prevent="save" class="space-y-4">
         <input type="file" wire:model="photo" accept="image/*" class="block">
         @error('photo')<p class="text-sm text-red-600">{{ $message }}</p>@enderror
@@ -17,12 +17,12 @@
 
         <button class="rounded-lg bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700">Submit</button>
       </form>
-      <p class="text-xs text-gray-500 mt-2">Photos go to moderation first. Approved photos will appear publicly later and visible to everyone.</p>
+      <p class="text-xs text-gray-500 mt-2">Memories go to moderation first. Approved memories will appear publicly later and visible to everyone.</p>
     </div>
 
     <div>
       <div class="flex items-center justify-between mb-3">
-        <h2 class="font-semibold">My Photos</h2>
+        <h2 class="font-semibold">My Memories</h2>
         @if($pendingCount)
           <span class="text-xs text-gray-500">Pending in queue: {{ $pendingCount }}</span>
         @endif

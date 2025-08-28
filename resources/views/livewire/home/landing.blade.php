@@ -77,8 +77,8 @@
   {{-- PHOTO COLLAGE (approved) --}}
   <section class="mx-auto max-w-6xl px-5 py-12">
     <div class="flex items-end justify-between mb-6">
-      <h2 class="text-xl md:text-2xl font-semibold">Photo Collage</h2>
-      <p class="text-sm text-gray-500">Approved photos from classmates</p>
+      <h2 class="text-xl md:text-2xl font-semibold">Memories</h2>
+      <p class="text-sm text-gray-500">Approved Memories from classmates</p>
     </div>
 
 
@@ -173,7 +173,7 @@
         </a>
       @else
         <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700">
-          Request Invite to Upload
+          Request Invite to Submit Memories
         </a>
       @endauth
     </div>

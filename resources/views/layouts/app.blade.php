@@ -11,7 +11,7 @@
   @livewireStyles
   <script>
   if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
-</script>
+  </script>
 </head>
 <body class="font-sans antialiased bg-gray-100">
   @include('layouts.navigation')
@@ -22,10 +22,10 @@
         <div class="p-4 font-semibold">Menu</div>
         <nav class="px-4 pb-4 text-sm space-y-2">
           <a class="block hover:underline" href="{{ route('dashboard') }}">Event Details</a>
-          <a class="block hover:underline" href="{{ route('photos.index') }}">Photos</a>
+          <a class="block hover:underline" href="{{ route('photos.index') }}">My Memories</a>
           @can('admin')
             <a class="block hover:underline" href="{{ route('admin.invites.index') }}">Admin ▸ Invites</a>
-            <a class="block hover:underline" href="{{ route('admin.photos.index') }}">Admin ▸ Photos</a>
+            <a class="block hover:underline" href="{{ route('admin.photos.index') }}">Admin ▸ Memories</a>
           @endcan
         </nav>
       </aside>
