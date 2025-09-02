@@ -1,8 +1,10 @@
 import './bootstrap';
-
 import Alpine from 'alpinejs';
-
 window.Alpine = Alpine;
+Alpine.start();
+
+// Global store for the mobile drawer
+Alpine.store('nav', { open: false })
 
 window.reactionBar = function (photoId, initialCounts = {}, initialMine = null) {
   return {
@@ -83,4 +85,3 @@ window.reactionBar = function (photoId, initialCounts = {}, initialMine = null) 
     },
   };
 };
-Alpine.start();

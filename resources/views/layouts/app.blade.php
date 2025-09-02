@@ -8,11 +8,15 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   @livewireStyles
 </head>
-<body class="font-sans antialiased bg-gray-100">
+<body
+  x-data="{ navOpen: false }"
+  x-effect="document.documentElement.classList.toggle('overflow-hidden', navOpen)"
+  class="font-sans antialiased bg-gray-100"
+>
   {{-- Top bar is always present; solid for app pages --}}
   @include('layouts.topnav', ['variant' => 'solid'])
 
-  {{-- Mobile/tablet subnav --}}
+  {{-- Mobile drawer --}}
   @include('layouts.subnav')
 
   <div class="min-h-screen flex">

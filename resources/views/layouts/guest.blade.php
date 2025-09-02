@@ -8,9 +8,13 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   @livewireStyles
 </head>
-<body class="font-sans antialiased bg-gray-100">
-  {{-- Transparent top bar on the homepage (sits over the hero) --}}
-  @include('layouts.topnavguest', ['variant' => request()->routeIs('home') ? 'transparent' : 'solid'])
+<body
+  x-data="{ navOpen: false }"
+  x-effect="document.documentElement.classList.toggle('overflow-hidden', navOpen)"
+  class="font-sans antialiased bg-gray-100"
+>
+  {{-- Transparent on homepage, solid elsewhere --}}
+  @include('layouts.topnav', ['variant' => request()->routeIs('home') ? 'transparent' : 'solid'])
 
   <main class="min-h-screen">
     {{ $slot }}
