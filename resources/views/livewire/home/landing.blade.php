@@ -34,14 +34,18 @@
           @endif
 
           <div class="mt-6 flex gap-3">
+            @auth
+            <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
+              Go to Dashboard
+            </a>
+            @else
             <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
               Request Invitation
             </a>
-            @guest
               <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium hover:bg-white/10">
                 Log In
               </a>
-            @endguest
+            @endauth
           </div>
         </div>
       </div>
