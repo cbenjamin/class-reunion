@@ -1,7 +1,6 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 window.Alpine = Alpine;
-Alpine.start();
 
 // Global store for the mobile drawer
 Alpine.store('nav', { open: false })
@@ -85,3 +84,76 @@ window.reactionBar = function (photoId, initialCounts = {}, initialMine = null) 
     },
   };
 };
+
+// Story wizard controller (client-side steps + server submit)
+window.storyWizard = function (initial = {}) {
+  return {
+    step: 1,
+    memory: '',
+    teacher: '',
+    song: '',
+    now: '',
+    anonymous: false,
+    busy: false,
+    errors: {},
+
+    next() {
+      // simple client-side check for step 1
+      this.errors = {};
+      if (this.step === 1) {
+        const len = (this.memory || '').trim().length;
+        if (len < 10) { this.errors.memory = ['Please share at least 10 characters.']; return; }
+        if (len > 600) { this.errors.memory = ['Please keep it under 600 characters.']; return; }
+      }
+      this.step = Math.min(this.step + 1, 3);
+    },
+
+    back() { this.step = Math.max(this.step - 1, 1); },
+
+    async submit() {
+      this.busy = true;
+      this.errors = {};
+      try {
+        const res = await fetch('/stories.json', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            memory: this.memory,
+            teacher: this.teacher || null,
+            song: this.song || null,
+            now: this.now || null,
+            anonymous: !!this.anonymous,
+          }),
+        });
+
+        if (res.status === 401) { window.location.href = '/login'; return; }
+
+        if (res.status === 422) {
+          const data = await res.json();
+          this.errors = data.errors || {};
+          // bounce user back to step 1 if the main memory failed
+          if (this.errors.memory) this.step = 1;
+          return;
+        }
+
+        if (!res.ok) throw new Error('Request failed');
+
+        const data = await res.json();
+        // redirect with a flashy query param the dashboard can show
+        window.location.href = '/dashboard?status=story_submitted';
+      } catch (e) {
+        console.error(e);
+        alert('Sorry, something went wrong submitting your story.');
+      } finally {
+        this.busy = false;
+      }
+    }
+  }
+}
+
+Alpine.start();
+

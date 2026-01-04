@@ -27,9 +27,11 @@
         <nav class="px-4 pb-4 text-sm space-y-2">
           <a class="block px-2 py-1 rounded {{ request()->routeIs('dashboard') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('dashboard') }}">Event Details</a>
           <a class="block px-2 py-1 rounded {{ request()->routeIs('photos.index') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('photos.index') }}">My Memories</a>
+          <a class="block px-2 py-1 rounded {{ request()->routeIs('stories.new') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('stories.new') }}">Share a Story</a>
           @can('admin')
             <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.invites.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.invites.index') }}">Admin ▸ Invites</a>
             <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.photos.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.photos.index') }}">Admin ▸ Memories</a>
+            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.stories.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.stories.index') }}">Admin ▸ Stories</a>
           @endcan
         </nav>
       </aside>

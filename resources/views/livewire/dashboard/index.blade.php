@@ -2,7 +2,11 @@
   @if(session('status'))
     <div class="mb-4 rounded bg-green-50 text-green-800 px-4 py-3 text-sm">{{ session('status') }}</div>
   @endif
-
+@if(request('status') === 'story_submitted')
+  <div class="mb-4 rounded bg-green-50 text-green-800 px-4 py-3 text-sm">
+    Thanks! Your story was submitted for review.
+  </div>
+@endif
   <h1 class="text-2xl font-bold mb-2">Event Details</h1>
   <p class="text-gray-600">
     Welcome! Head to the Photos page to upload your memories. All uploaded photos will be moderated and selected to be featured on the homepage and during the reunion.

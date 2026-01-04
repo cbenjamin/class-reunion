@@ -182,6 +182,8 @@
       @endauth
     </div>
   </section>
+  
+  <livewire:stories.wall :limit="18" />
 
   {{-- FOOTER --}}
   <footer class="py-10 text-center text-xs text-gray-500">
@@ -222,7 +224,6 @@
       </div>
     </div>
   </div>
-
   {{-- Minimal parallax + gallery helper --}}
   <script>
     function landingPage(items){

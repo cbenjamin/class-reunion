@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PhotoReactionController;
+use App\Http\Controllers\StoryController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,11 @@ use App\Livewire\Admin\InvitesQueue;
 use App\Livewire\Admin\PhotosModeration;
 use App\Livewire\Invite\SetPassword;
 use App\Livewire\Home\Landing;
+use App\Livewire\Stories\Wizard as StoriesWizard;
+use App\Livewire\Stories\Wall as StoriesWall;
+use App\Livewire\Admin\StoriesModeration as AdminStories;
+
+
 
 // Replace any redirect('/') with:
 Route::get('/', Landing::class)->name('home');
@@ -34,12 +40,14 @@ Route::middleware(['auth','approved'])->group(function () {
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
     Route::get('/photos', PhotosManager::class)->name('photos.index');
     Route::post('/photos/{photo}/react.json', [PhotoReactionController::class, 'storeJson'])->name('photos.react.json')->middleware('auth');
+    Route::get('/stories/new', StoriesWizard::class)->name('stories.new');
 });
 
 // Admin moderation (auth only; gate inside components)
 Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('/admin/invites', InvitesQueue::class)->name('admin.invites.index');
     Route::get('/admin/photos', PhotosModeration::class)->name('admin.photos.index');
+    Route::get('/admin/stories', AdminStories::class)->name('admin.stories.index');
 });
 
 Route::middleware('auth')->group(function () {
@@ -49,3 +57,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/invite/set-password/{token}', SetPassword::class)->name('invite.set-password');
+
+
+Route::post('/stories.json', [StoryController::class, 'storeJson'])
+    ->middleware(['auth','approved','throttle:60,1'])
+    ->name('stories.store.json');
+
+
