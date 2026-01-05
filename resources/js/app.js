@@ -1,6 +1,6 @@
 import './bootstrap';
-import Alpine from 'alpinejs';
-window.Alpine = Alpine;
+//import Alpine from 'alpinejs';
+//window.Alpine = Alpine;
 
 // Global store for the mobile drawer
 Alpine.store('nav', { open: false })
@@ -155,5 +155,5 @@ window.storyWizard = function (initial = {}) {
   }
 }
 
-Alpine.start();
+//Alpine.start();
 
