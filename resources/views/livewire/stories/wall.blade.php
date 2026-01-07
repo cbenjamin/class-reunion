@@ -8,7 +8,7 @@
   ];
 @endphp
 
-<div class="mt-12">
+<div class="mt-12 mx-auto max-w-6xl px-4 md:px-6">
   <div class="flex items-end justify-between mb-4">
     <h2 class="text-xl md:text-2xl font-semibold">Memory Book</h2>
     <a href="{{ route('stories.new') }}" class="text-sm text-indigo-700 hover:underline">Share yours</a>
@@ -17,7 +17,7 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     @forelse($stories as $i => $s)
       <article
-        class="rounded-2xl overflow-hidden shadow ring-1 ring-black/5 backdrop-blur bg-gradient-to-br {{ $bg[$i % count($bg)] }} relative"
+        class="group rounded-2xl overflow-hidden shadow ring-1 ring-black/5 backdrop-blur bg-gradient-to-br {{ $bg[$i % count($bg)] }} relative"
       >
         <div class="p-4 sm:p-5 text-white">
           <p class="text-sm opacity-90">“{{ Str::limit($s->memory, 260) }}”</p>

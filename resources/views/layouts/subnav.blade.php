@@ -51,8 +51,7 @@
 
       <a href="{{ route('photos.index') }}"
          @click="navOpen = false"
-         class="block px-3 py-2 rounded {{ request()->routeIs('photos.index') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50 text-gray-700' }}">
-        My Memories
+         class="block px-3 py-2 rounded {{ request()->routeIs('photos.index') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50 text-gray-700' }}">My Photos
       </a>
       <a class="block px-2 py-1 rounded {{ request()->routeIs('stories.new') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('stories.new') }}">Share a Memory</a>
       @can('admin')

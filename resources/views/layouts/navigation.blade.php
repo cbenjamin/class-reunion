@@ -8,7 +8,7 @@
 
     @auth
       <a href="{{ route('dashboard') }}" class="text-sm text-gray-600 hover:text-gray-900">Event Details</a>
-      <a href="{{ route('photos.index') }}" class="text-sm text-gray-600 hover:text-gray-900">My Memories</a>
+      <a href="{{ route('photos.index') }}" class="text-sm text-gray-600 hover:text-gray-900">My Photos</a>
       @can('admin')
         <a href="{{ route('admin.invites.index') }}" class="text-sm text-indigo-600">Admin</a>
       @endcan

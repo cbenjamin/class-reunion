@@ -177,7 +177,7 @@
         </a>
       @else
         <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700">
-          Request Invite to Submit Memories
+          Request Invite to Submit Photos
         </a>
       @endauth
     </div>
