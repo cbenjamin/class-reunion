@@ -17,8 +17,17 @@ use App\Livewire\Home\Landing;
 use App\Livewire\Stories\Wizard as StoriesWizard;
 use App\Livewire\Stories\Wall as StoriesWall;
 use App\Livewire\Admin\StoriesModeration as AdminStories;
+use App\Livewire\Admin\EventSettings as AdminEventSettings;
+use App\Livewire\Admin\UsersIndex;
 
+Route::middleware(['auth','can:admin'])->group(function () {
+    // …existing admin routes
+    Route::get('/admin/users', UsersIndex::class)->name('admin.users.index');
+});
 
+Route::middleware(['auth','can:admin'])->group(function () {
+    Route::get('/admin/event', AdminEventSettings::class)->name('admin.event');
+});
 
 // Replace any redirect('/') with:
 Route::get('/', Landing::class)->name('home');

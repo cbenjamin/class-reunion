@@ -53,7 +53,7 @@
   </section>
 
   {{-- INFO STRIP --}}
-  <section class="relative">
+  <section>
     <div class="absolute inset-0 -z-10" x-ref="band" :style="bandStyle">
       <div class="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.15),transparent_40%)]"></div>
     </div>
@@ -62,17 +62,17 @@
       <div class="grid md:grid-cols-3 gap-6">
         <div class="bg-white shadow rounded-xl p-6">
           <h3 class="font-semibold mb-2">When</h3>
-          <p class="text-sm text-gray-700">{{ $event['date'] ?? 'TBD' }}</p>
-          <p class="text-sm text-gray-700">{{ $event['time'] ?? '' }}</p>
+          <p class="text-sm text-gray-700">Date: {{ $event['date'] }}</p>
+          <p class="text-sm text-gray-700">Time: {{ $event['time'] }}</p>
         </div>
         <div class="bg-white shadow rounded-xl p-6">
           <h3 class="font-semibold mb-2">Where</h3>
-          <p class="text-sm text-gray-700">{{ $event['venue'] ?? 'TBD' }}</p>
-          <p class="text-sm text-gray-700">{{ $event['address'] ?? '' }}</p>
+          <p class="text-sm text-gray-700">Venue: {{ $event['venue'] }}</p>
+          <p class="text-sm text-gray-700">Address: {{ $event['address'] }}</p>
         </div>
         <div class="bg-white shadow rounded-xl p-6">
           <h3 class="font-semibold mb-2">What to know</h3>
-          <p class="text-sm text-gray-700">{{ $event['notes'] ?? 'More details coming soon.' }}</p>
+          <p class="text-sm text-gray-700">{!! $event['notes'] !!}</p>
         </div>
       </div>
     </div>
@@ -81,8 +81,8 @@
   {{-- PHOTO COLLAGE (approved) --}}
   <section class="mx-auto max-w-6xl px-5 py-12">
     <div class="flex items-end justify-between mb-6">
-      <h2 class="text-xl md:text-2xl font-semibold">Memories</h2>
-      <p class="text-sm text-gray-500">Approved Memories from classmates</p>
+      <h2 class="text-xl md:text-2xl font-semibold">Photos</h2>
+      <p class="text-sm text-gray-500">Approved photos from classmates</p>
     </div>
 
 

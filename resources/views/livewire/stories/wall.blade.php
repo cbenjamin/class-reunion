@@ -11,7 +11,6 @@
 <div class="mt-12 mx-auto max-w-6xl px-4 md:px-6">
   <div class="flex items-end justify-between mb-4">
     <h2 class="text-xl md:text-2xl font-semibold">Memory Book</h2>
-    <a href="{{ route('stories.new') }}" class="text-sm text-indigo-700 hover:underline">Share yours</a>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -54,4 +53,15 @@
       <div class="col-span-full text-sm text-gray-600">No stories yet. Be the first!</div>
     @endforelse
   </div>
+      <div class="mt-8 text-center">
+      @auth
+        <a href="{{ route('stories.new') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700">
+          Share Your Story
+        </a>
+      @else
+        <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700">
+          Request Invite to Submit Memories
+        </a>
+      @endauth
+    </div>
 </div>

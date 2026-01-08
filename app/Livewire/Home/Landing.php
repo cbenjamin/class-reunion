@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use App\Models\EventSetting;
 
 #[Layout('layouts.guest')]
 class Landing extends Component
@@ -24,13 +25,15 @@ class Landing extends Component
 
     public function mount(): void
     {
-        $this->event = config('reunion') ?? [
-            'name'    => config('app.name', 'Reunion'),
-            'date'    => 'TBD',
-            'time'    => '',
-            'venue'   => '',
-            'address' => '',
-            'notes'   => '',
+        $s = EventSetting::query()->first();
+
+        $this->event = [
+            'name'    => $s->event_name ?: config('app.name', 'Reunion'),
+            'date'    => optional($s?->event_date)->format('F j, Y') ?: 'TBD',
+            'time'    => $s?->event_time ?: 'TBD',
+            'venue'   => $s?->venue ?: 'TBD',
+            'address' => $s?->address ?: 'TBD',
+            'notes'   => $s?->details ?: 'More details coming soon.',
         ];
 
         $this->refreshPhotos(); // also loads reactions + hero

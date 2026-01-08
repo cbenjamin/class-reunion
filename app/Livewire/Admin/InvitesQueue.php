@@ -1,55 +1,86 @@
 <?php
+
 namespace App\Livewire\Admin;
 
 use App\Models\InvitationRequest;
+use App\Models\User;
 use App\Notifications\InvitationApproved;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
+use Livewire\WithPagination;
+
 #[Layout('layouts.app')]
 class InvitesQueue extends Component
 {
-    public $pending = [];
-    public $approved = [];
-    public $denied = [];
+    use WithPagination;
 
-    public function mount()
+    public function approve(int $id): void
     {
-        //abort_unless(Gate::allows('admin'), 403);
-        $this->refreshLists();
-    }
-
-    public function refreshLists(): void
-    {
-        $this->pending = InvitationRequest::where('status','pending')->latest()->get();
-        $this->approved = InvitationRequest::where('status','approved')->latest()->get();
-        $this->denied = InvitationRequest::where('status','denied')->latest()->get();
-    }
-
-    public function approve(int $id)
-    {
-        //abort_unless(Gate::allows('admin'), 403);
         $req = InvitationRequest::findOrFail($id);
+
+        // Create/fetch user
+        $user = User::firstOrCreate(
+            ['email' => $req->email],
+            [
+                'name'     => $req->name ?? $req->full_name ?? Str::before($req->email, '@'),
+                'password' => Hash::make(Str::random(40)),
+            ]
+        );
+
+        // Mark user approved
+        if (! $user->is_approved) {
+            $user->is_approved = true;
+            $user->save();
+        }
+
+        // Update invite + notify
         $req->update([
-            'status' => 'approved',
+            'status'         => 'approved',
             'approval_token' => Str::uuid(),
+            'approved_by'    => auth()->id(),
+            'approved_at'    => now(),
         ]);
-        $req->notify(new InvitationApproved($req));
-        $this->refreshLists();
-        session()->flash('status','Approved & email sent.');
+
+        try {
+            $req->notify(new InvitationApproved($req));
+        } catch (\Throwable $e) {
+            \Log::warning('InvitationApproved notify failed', ['error' => $e->getMessage()]);
+        }
+
+        // Send password setup link
+        $status = Password::sendResetLink(['email' => $user->email]);
+
+        session()->flash(
+            'status',
+            $status === Password::RESET_LINK_SENT
+                ? 'Approved. Password setup email sent.'
+                : 'Approved. Password email issue — check logs.'
+        );
+
+        $this->resetPage();
     }
 
-    public function deny(int $id)
+    public function reject(int $id): void
     {
-        //abort_unless(Gate::allows('admin'), 403);
-        InvitationRequest::findOrFail($id)->update(['status' => 'denied']);
-        $this->refreshLists();
-        session()->flash('status','Request denied.');
+        InvitationRequest::findOrFail($id)->update([
+            'status'      => 'rejected',
+            'approved_by' => auth()->id(),
+        ]);
+
+        session()->flash('status', 'Invitation rejected.');
+        $this->resetPage();
     }
 
     public function render()
     {
-        return view('livewire.admin.invites-queue');
+        $pending = InvitationRequest::query()
+            ->where('status', 'pending')
+            ->latest()
+            ->paginate(24);
+
+        return view('livewire.admin.invites-queue', compact('pending'));
     }
 }

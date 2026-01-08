@@ -6,6 +6,9 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InviteRequestReceived;
+
 #[Layout('layouts.guest')]
 class RequestForm extends Component
 {
@@ -37,6 +40,17 @@ class RequestForm extends Component
         ]);
 
         $this->submitted = true;
+
+        try {
+            Mail::to($this->email)->send(
+                new InviteRequestReceived(
+                    name: $this->full_name,
+                    eventName: config('app.name')
+                )
+            );
+        } catch (\Throwable $e) {
+            \Log::warning('Invite ack email failed', ['error' => $e->getMessage()]);
+        }      
     }
 
     public function render()

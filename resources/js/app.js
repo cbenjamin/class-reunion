@@ -2,6 +2,11 @@ import './bootstrap';
 //import Alpine from 'alpinejs';
 //window.Alpine = Alpine;
 
+// Quill (rich text) - import once
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
+window.Quill = Quill;
+
 // Global store for the mobile drawer
 Alpine.store('nav', { open: false })
 

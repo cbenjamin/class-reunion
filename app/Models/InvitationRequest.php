@@ -14,6 +14,6 @@ class InvitationRequest extends Model
     ];
 
     protected $casts = [
-        'answers' => 'array',
+    'answers' => 'array',
     ];
 }

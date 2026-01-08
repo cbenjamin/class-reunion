@@ -7,6 +7,7 @@
     <!--<a href="{{ route('invite.create') }}" class="text-sm text-gray-600 hover:text-gray-900">Request Invitation</a>-->
 
     @auth
+      <a href="{{ route('dashboard') }}" class="text-sm text-gray-600 hover:text-gray-900">Home</a>
       <a href="{{ route('dashboard') }}" class="text-sm text-gray-600 hover:text-gray-900">Event Details</a>
       <a href="{{ route('photos.index') }}" class="text-sm text-gray-600 hover:text-gray-900">My Photos</a>
       @can('admin')
