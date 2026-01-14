@@ -8,7 +8,7 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   @livewireStyles
 
-  <!-- PushAlert Unified Code -->
+    <!-- PushAlert Unified Code -->
   <script type="text/javascript">
       (function(d, t) {
           var g = d.createElement(t),
