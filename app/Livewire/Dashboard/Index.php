@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use App\Models\EventSetting;
 
 #[Layout('layouts.app')]
 class Index extends Component
@@ -13,12 +14,17 @@ class Index extends Component
 
     public function mount(): void
     {
-        $this->event = config('reunion');
+        $s = EventSetting::query()->first();
 
-        $venue  = $this->event['venue']  ?? '';
-        $addr   = $this->event['address'] ?? '';
-        $query  = urlencode(trim("$venue, $addr"));
-        $this->mapUrl = "https://www.google.com/maps/search/?api=1&query={$query}";
+        $this->event = [
+            'name'    => $s->event_name ?: config('app.name', 'Reunion'),
+            'date'    => optional($s?->event_date)->format('F j, Y') ?: 'TBD',
+            'time'    => $s?->event_time ?: 'TBD',
+            'venue'   => $s?->venue ?: 'TBD',
+            'address' => $s?->address ?: 'TBD',
+            'notes'   => $s?->details ?: 'More details coming soon.',
+        ];
+        //$this->mapUrl = "https://www.google.com/maps/search/?api=1&query={$query}";
     }
 
     public function render()

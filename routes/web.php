@@ -19,6 +19,19 @@ use App\Livewire\Stories\Wall as StoriesWall;
 use App\Livewire\Admin\StoriesModeration as AdminStories;
 use App\Livewire\Admin\EventSettings as AdminEventSettings;
 use App\Livewire\Admin\UsersIndex;
+use App\Livewire\Ideas\Submit as IdeasSubmit;
+use App\Livewire\Admin\IdeasModeration;
+
+// User form (require login + approval)
+Route::middleware(['auth','approved'])->group(function () {
+    Route::get('/ideas/new', IdeasSubmit::class)->name('ideas.new');
+});
+
+// Admin moderation
+Route::middleware(['auth','can:admin'])->group(function () {
+    Route::get('/admin/ideas', IdeasModeration::class)->name('admin.ideas.index');
+});
+
 
 Route::middleware(['auth','can:admin'])->group(function () {
     // …existing admin routes

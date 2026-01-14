@@ -19,19 +19,19 @@
       <dl class="text-sm text-gray-700 space-y-2">
         <div class="flex justify-between gap-3">
           <dt class="text-gray-500">Date</dt>
-          <dd class="font-medium">{{ $event['date'] ?? 'TBD' }}</dd>
+          <dd class="font-medium">{{ $event['date'] }}</dd>
         </div>
         <div class="flex justify-between gap-3">
           <dt class="text-gray-500">Time</dt>
-          <dd class="font-medium">{{ $event['time'] ?? 'TBD' }}</dd>
+          <dd class="font-medium">{{ $event['time'] }}</dd>
         </div>
         <div class="flex justify-between gap-3">
           <dt class="text-gray-500">Venue</dt>
-          <dd class="font-medium text-right">{{ $event['venue'] ?? 'TBD' }}</dd>
+          <dd class="font-medium text-right">{{ $event['venue'] }}</dd>
         </div>
         <div class="flex justify-between gap-3">
           <dt class="text-gray-500">Address</dt>
-          <dd class="font-medium text-right">{{ $event['address'] ?? 'TBD' }}</dd>
+          <dd class="font-medium text-right">{{ $event['address'] }}</dd>
         </div>
       </dl>
 
@@ -46,7 +46,7 @@
     <div class="bg-white shadow rounded-xl p-6">
       <h2 class="font-semibold mb-4">Notes</h2>
       <p class="text-sm text-gray-700 leading-relaxed">
-        {{ $event['notes'] ?? 'More details coming soon.' }}
+        {!! $event['notes'] !!}
       </p>
       <hr class="my-4">
       <h3 class="font-medium mb-2">Quick Links</h3>
