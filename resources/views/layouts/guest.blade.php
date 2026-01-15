@@ -3,11 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ $title ?? config('app.name', 'Reunion') }}</title>
   @vite(['resources/css/app.css','resources/js/app.js'])
   @livewireStyles
-
  @auth
     <!-- PushAlert Unified Code -->
   <script type="text/javascript">
@@ -19,15 +17,14 @@
       }(document, "script"));
   </script>
   <!-- End PushAlert Unified Code -->  
-@endauth
+@endauth  
 </head>
-<body
-  x-data="{ navOpen: false }"
-  x-effect="document.documentElement.classList.toggle('overflow-hidden', navOpen)"
-  class="font-sans antialiased bg-gray-100"
->
-  {{-- Transparent on homepage, solid elsewhere --}}
-  @include('layouts.topnav', ['variant' => request()->routeIs('home') ? 'transparent' : 'solid'])
+<body class="font-sans antialiased bg-gray-100" x-data="{ drawer:false }" @keydown.window.escape="drawer=false">
+  {{-- Top bar (transparent/solid controlled by caller) --}}
+  @include('layouts.topnav')
+
+  {{-- Drawer is included but only renders for @auth --}}
+  @include('layouts.drawer')
 
   <main class="min-h-screen">
     {{ $slot }}
