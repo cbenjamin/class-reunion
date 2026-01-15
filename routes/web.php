@@ -21,6 +21,22 @@ use App\Livewire\Admin\EventSettings as AdminEventSettings;
 use App\Livewire\Admin\UsersIndex;
 use App\Livewire\Ideas\Submit as IdeasSubmit;
 use App\Livewire\Admin\IdeasModeration;
+use App\Livewire\Memorial\Submit as MemorialSubmit;
+use App\Livewire\Memorial\Wall as MemorialWall;
+use App\Livewire\Admin\MemorialModeration;
+
+// Public memorial wall
+Route::get('/memorials', MemorialWall::class)->name('memorials.wall');
+
+// Submit memorial (require login so we have accountability; change to public if desired)
+Route::middleware(['auth','approved'])->group(function () {
+    Route::get('/memorials/new', MemorialSubmit::class)->name('memorials.submit');
+});
+
+// Admin moderation
+Route::middleware(['auth','can:admin'])->group(function () {
+    Route::get('/admin/memorials', MemorialModeration::class)->name('admin.memorials');
+});
 
 // User form (require login + approval)
 Route::middleware(['auth','approved'])->group(function () {

@@ -42,6 +42,8 @@
           <a class="block px-2 py-1 rounded {{ request()->routeIs('stories.new') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('stories.new') }}">Share a Story</a>
           <a class="block px-2 py-1 rounded {{ request()->routeIs('ideas.new') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
    href="{{ route('ideas.new') }}">Suggest an Idea</a>
+          <a class="block px-2 py-1 rounded {{ request()->routeIs('memorials.wall') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
+   href="{{ route('memorials.wall') }}">Memorial Wall</a>
 
           @can('admin')
           <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.event') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
@@ -52,11 +54,12 @@
              href="{{ route('admin.ideas.index') }}">Admin ▸ Ideas</a>
            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.invites.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
      href="{{ route('admin.invites.index') }}">Admin ▸ Invites</a>
-
-            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.users.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
-     href="{{ route('admin.users.index') }}">Admin ▸ Users</a>
+            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.memorials.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
+     href="{{ route('admin.memorials') }}">Admin ▸ Memorials</a>
             <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.photos.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.photos.index') }}">Admin ▸ Photos</a>
             <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.stories.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.stories.index') }}">Admin ▸ Stories</a>
+            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.users.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
+     href="{{ route('admin.users.index') }}">Admin ▸ Users</a>
           @endcan
         </nav>
       </aside>

@@ -26,6 +26,10 @@ export default {
     'from-emerald-500/90','to-teal-500/90',
     'from-amber-500/90','to-orange-500/90',
     'from-fuchsia-500/90','to-purple-500/90',
+    'bg-gradient-to-br',
+    'from-black',
+    'via-red-700',
+    'to-black',
   ],
 };
 

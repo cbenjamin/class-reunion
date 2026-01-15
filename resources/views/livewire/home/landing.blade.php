@@ -19,11 +19,11 @@
           <img src="{{ $heroUrl }}" alt="Reunion hero"
                class="h-full w-full object-cover will-change-transform select-none pointer-events-none" loading="eager">
         @else
-          <div class="h-full w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600"></div>
+          <div class="h-full w-full bg-gradient-to-br from-black via-red-700 to-black"></div>
         @endif
       @else
         {{-- Guests see a neutral gradient (no photos) --}}
-        <div class="h-full w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600"></div>
+        <div class="h-full w-full bg-gradient-to-br from-black via-red-700 to-black"></div>
       @endauth
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10"></div>
     </div>
