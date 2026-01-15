@@ -8,6 +8,7 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   @livewireStyles
 
+ @auth
     <!-- PushAlert Unified Code -->
   <script type="text/javascript">
       (function(d, t) {
@@ -18,6 +19,7 @@
       }(document, "script"));
   </script>
   <!-- End PushAlert Unified Code -->  
+@endauth
 </head>
 <body
   x-data="{ navOpen: false }"

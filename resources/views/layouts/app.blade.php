@@ -46,20 +46,21 @@
    href="{{ route('memorials.wall') }}">Memorial Wall</a>
 
           @can('admin')
+        <div class="mt-3 pt-3 border-t text-xs uppercase tracking-wide text-gray-500">Admin</div>
           <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.event') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
              href="{{ route('admin.event') }}">
-            Admin ▸ Event Settings
+            Event Settings
           </a>
           <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.ideas.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
-             href="{{ route('admin.ideas.index') }}">Admin ▸ Ideas</a>
+             href="{{ route('admin.ideas.index') }}">Ideas</a>
            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.invites.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
-     href="{{ route('admin.invites.index') }}">Admin ▸ Invites</a>
+     href="{{ route('admin.invites.index') }}">Invite Requests</a>
             <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.memorials.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
-     href="{{ route('admin.memorials') }}">Admin ▸ Memorials</a>
-            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.photos.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.photos.index') }}">Admin ▸ Photos</a>
-            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.stories.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.stories.index') }}">Admin ▸ Stories</a>
+     href="{{ route('admin.memorials') }}">Memorials</a>
+            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.photos.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.photos.index') }}">Photos</a>
+            <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.stories.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('admin.stories.index') }}">Stories</a>
             <a class="block px-2 py-1 rounded {{ request()->routeIs('admin.users.*') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
-     href="{{ route('admin.users.index') }}">Admin ▸ Users</a>
+     href="{{ route('admin.users.index') }}">Users</a>
           @endcan
         </nav>
       </aside>
