@@ -36,6 +36,9 @@ class Landing extends Component
     public array $mapMarkers = [];  // [{lat,lng,label,name}]
     public array $topCities  = [];  // [{city,state,count}]
 
+    /** ✅ For Alpine gallery init (removes Blade preamble) */
+    public array $galleryItems = [];
+
     public function mount(): void
     {
         $s = EventSetting::query()->first();
@@ -51,7 +54,7 @@ class Landing extends Component
 
         $this->computeStats();
         $this->refreshPhotos();
-        $this->loadMapData(); // ← add map markers for homepage
+        $this->loadMapData();
     }
 
     protected function computeStats(): void
@@ -62,7 +65,7 @@ class Landing extends Component
             'stories'    => Story::where('status', 'approved')->count(),
         ];
     }
-    
+
     public function refreshPhotos(): void
     {
         $this->photos = Photo::where('status', 'approved')
@@ -71,9 +74,17 @@ class Landing extends Component
             ->limit(60)
             ->get();
 
+        // Hero
         $picked = $this->photos->firstWhere('is_featured', true) ?? $this->photos->first();
         $this->heroUrl = $picked ? Storage::disk($picked->disk)->url($picked->path) : '';
 
+        // ✅ Build items for Alpine gallery
+        $this->galleryItems = $this->photos->map(fn ($p) => [
+            'url'     => Storage::disk($p->disk)->url($p->path),
+            'caption' => $p->caption,
+        ])->values()->all();
+
+        // Reaction counts
         $photoIds = $this->photos->pluck('id');
 
         $rows = PhotoReaction::whereIn('photo_id', $photoIds)
@@ -86,11 +97,12 @@ class Landing extends Component
             $this->reactionCounts[$r->photo_id][$r->type] = (int) $r->c;
         }
 
+        // My reactions
         if (Auth::check()) {
-            $mine = PhotoReaction::whereIn('photo_id', $photoIds)
+            $this->myReactions = PhotoReaction::whereIn('photo_id', $photoIds)
                 ->where('user_id', Auth::id())
-                ->pluck('type', 'photo_id');
-            $this->myReactions = $mine->toArray();
+                ->pluck('type', 'photo_id')
+                ->toArray();
         } else {
             $this->myReactions = [];
         }
@@ -98,7 +110,7 @@ class Landing extends Component
 
     protected function loadMapData(): void
     {
-        // Only classmates who opted in + have coords
+        // Only opt-in classmates with coords
         $rows = User::query()
             ->where('share_location', true)
             ->whereNotNull('lat')
@@ -128,7 +140,6 @@ class Landing extends Component
             ])->toArray();
     }
 
-    /** Reaction handler kept as-is */
     public function react(int $photoId, string $type)
     {
         if (! Auth::check()) {
