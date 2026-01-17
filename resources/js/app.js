@@ -1,6 +1,25 @@
-import './bootstrap';
-//import Alpine from 'alpinejs';
-//window.Alpine = Alpine;
+// resources/js/app.js
+import './bootstrap'
+import Alpine from 'alpinejs'
+
+// Guard against double-starts
+if (!window.Alpine) {
+  window.Alpine = Alpine
+
+  document.addEventListener('alpine:init', () => {
+    // single global nav store used by hamburger + drawer
+    if (!Alpine.store('nav')) {
+      Alpine.store('nav', {
+        open: false,
+        toggle() { this.open = !this.open },
+        close()  { this.open = false },
+        show()   { this.open = true },
+      })
+    }
+  })
+
+  Alpine.start()
+}
 
 // Quill (rich text) - import once
 import Quill from 'quill';

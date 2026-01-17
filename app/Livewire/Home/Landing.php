@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Home;
 
-use App\Models\EventSetting;
 use App\Models\Photo;
 use App\Models\PhotoReaction;
-use App\Models\Story;
 use App\Models\User;
+use App\Models\Story;
+use App\Models\EventSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -16,36 +16,32 @@ use Livewire\Component;
 #[Layout('layouts.guest')]
 class Landing extends Component
 {
-    /** Event meta shown in hero + info blocks */
     public array $event = [];
-
-    /** URL for hero image */
     public string $heroUrl = '';
 
-    /** @var \Illuminate\Support\Collection<int,\App\Models\Photo> */
+    /** @var \Illuminate\Support\Collection */
     public $photos;
 
-    /** @var \Illuminate\Support\Collection<int,\App\Models\Story> */
-    public $stories;
+    /** Reactions (photo_id keyed) */
+    public array $reactionCounts = [];
+    public array $myReactions   = [];
 
-    /** Dashboard/guest stats */
     public array $stats = [
         'classmates' => 0,
         'photos'     => 0,
         'stories'    => 0,
     ];
 
-    /** Reaction state keyed by photo_id */
-    public array $reactionCounts = [];   // [photo_id => ['like'=>2,'love'=>1,...]]
-    public array $myReactions   = [];    // [photo_id => 'like'|'love'|...]
+    /** Map data for homepage */
+    public array $mapMarkers = [];  // [{lat,lng,label,name}]
+    public array $topCities  = [];  // [{city,state,count}]
 
     public function mount(): void
     {
         $s = EventSetting::query()->first();
 
-        // Safer null handling for settings
         $this->event = [
-            'name'    => $s?->event_name ?: config('app.name', 'Reunion'),
+            'name'    => $s->event_name ?: config('app.name', 'Reunion'),
             'date'    => optional($s?->event_date)->format('F j, Y') ?: 'TBD',
             'time'    => $s?->event_time ?: 'TBD',
             'venue'   => $s?->venue ?: 'TBD',
@@ -53,13 +49,20 @@ class Landing extends Component
             'notes'   => $s?->details ?: 'More details coming soon.',
         ];
 
-        // Load content for both guests and members
-        $this->refreshPhotos();   // also loads reactions + hero
-        $this->refreshStories();  // approved stories for teasers
-        $this->loadStats();       // counts for guest “How it works” section
+        $this->computeStats();
+        $this->refreshPhotos();
+        $this->loadMapData(); // ← add map markers for homepage
     }
 
-    /** Load approved photos + hero + reaction state */
+    protected function computeStats(): void
+    {
+        $this->stats = [
+            'classmates' => User::where('is_approved', true)->count(),
+            'photos'     => Photo::where('status', 'approved')->count(),
+            'stories'    => Story::where('status', 'approved')->count(),
+        ];
+    }
+    
     public function refreshPhotos(): void
     {
         $this->photos = Photo::where('status', 'approved')
@@ -68,16 +71,14 @@ class Landing extends Component
             ->limit(60)
             ->get();
 
-        // Hero image
         $picked = $this->photos->firstWhere('is_featured', true) ?? $this->photos->first();
         $this->heroUrl = $picked ? Storage::disk($picked->disk)->url($picked->path) : '';
 
-        // Reaction counts for all listed photos
         $photoIds = $this->photos->pluck('id');
 
         $rows = PhotoReaction::whereIn('photo_id', $photoIds)
-            ->select('photo_id', 'type', DB::raw('count(*) as c'))
-            ->groupBy('photo_id', 'type')
+            ->select('photo_id','type', DB::raw('count(*) as c'))
+            ->groupBy('photo_id','type')
             ->get();
 
         $this->reactionCounts = [];
@@ -85,7 +86,6 @@ class Landing extends Component
             $this->reactionCounts[$r->photo_id][$r->type] = (int) $r->c;
         }
 
-        // My reactions (if logged in)
         if (Auth::check()) {
             $mine = PhotoReaction::whereIn('photo_id', $photoIds)
                 ->where('user_id', Auth::id())
@@ -96,25 +96,39 @@ class Landing extends Component
         }
     }
 
-    /** Load latest approved stories for homepage teasers */
-    public function refreshStories(): void
+    protected function loadMapData(): void
     {
-        $this->stories = Story::with('user')
-            ->where('status', 'approved')
-            ->latest()
-            ->limit(18)
-            ->get();
+        // Only classmates who opted in + have coords
+        $rows = User::query()
+            ->where('share_location', true)
+            ->whereNotNull('lat')
+            ->whereNotNull('lng')
+            ->get(['id','name','city','state','lat','lng']);
+
+        $this->mapMarkers = $rows->map(fn($u) => [
+            'lat'   => (float) $u->lat,
+            'lng'   => (float) $u->lng,
+            'label' => trim(($u->city ?: '').', '.($u->state ?: '')),
+            'name'  => $u->name,
+        ])->values()->toArray();
+
+        $this->topCities = User::query()
+            ->selectRaw('city, state, count(*) as c')
+            ->where('share_location', true)
+            ->whereNotNull('lat')
+            ->whereNotNull('lng')
+            ->groupBy('city','state')
+            ->orderByDesc('c')
+            ->limit(6)
+            ->get()
+            ->map(fn($r) => [
+                'city'  => (string) $r->city,
+                'state' => (string) $r->state,
+                'count' => (int) $r->c,
+            ])->toArray();
     }
 
-    /** Simple site stats for guest section */
-    public function loadStats(): void
-    {
-        $this->stats['classmates'] = User::where('is_approved', true)->count();
-        $this->stats['photos']     = Photo::where('status', 'approved')->count();
-        $this->stats['stories']    = Story::where('status', 'approved')->count();
-    }
-
-    /** Toggle or change a reaction inline (no full reload) */
+    /** Reaction handler kept as-is */
     public function react(int $photoId, string $type)
     {
         if (! Auth::check()) {
@@ -123,7 +137,6 @@ class Landing extends Component
 
         $current = $this->myReactions[$photoId] ?? null;
 
-        // Toggle off if same type
         if ($current === $type) {
             PhotoReaction::where('photo_id', $photoId)
                 ->where('user_id', Auth::id())
@@ -139,14 +152,12 @@ class Landing extends Component
             return;
         }
 
-        // Create or switch reaction atomically
         DB::transaction(function () use ($photoId, $type, $current) {
             $existing = PhotoReaction::where('photo_id', $photoId)
                 ->where('user_id', Auth::id())
                 ->first();
 
             if ($existing) {
-                // decrement old type count
                 if ($current && isset($this->reactionCounts[$photoId][$current])) {
                     $this->reactionCounts[$photoId][$current] = max(0, $this->reactionCounts[$photoId][$current] - 1);
                     if ($this->reactionCounts[$photoId][$current] === 0) {
@@ -162,7 +173,6 @@ class Landing extends Component
                 ]);
             }
 
-            // increment new type
             $this->reactionCounts[$photoId][$type] = ($this->reactionCounts[$photoId][$type] ?? 0) + 1;
             $this->myReactions[$photoId] = $type;
         });
@@ -172,4 +182,7 @@ class Landing extends Component
     {
         return view('livewire.home.landing');
     }
+
+    public int $clicks = 0;
+    public function ping() { $this->clicks++; }
 }

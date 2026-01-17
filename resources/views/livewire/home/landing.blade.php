@@ -61,76 +61,167 @@
     </div>
   </section>
 
-  {{-- ==================== LOGGED-IN CONTENT ==================== --}}
-  @auth
-    {{-- INFO STRIP --}}
-    <section>
-      <div class="absolute inset-0 -z-10" x-ref="band" :style="bandStyle">
-        <div class="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.15),transparent_40%)]"></div>
-      </div>
+{{-- ==================== LOGGED-IN CONTENT ==================== --}}
+@auth
+  {{-- INFO STRIP (keep as-is) --}}
+  <section>
+    <div class="absolute inset-0 -z-10" x-ref="band" :style="bandStyle">
+      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.15),transparent_40%)]"></div>
+    </div>
 
-      <div class="mx-auto max-w-6xl px-5 py-10 md:py-14">
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="bg-white shadow rounded-xl p-6">
-            <h3 class="font-semibold mb-2">When</h3>
-            <p class="text-sm text-gray-700">Date: {{ $event['date'] }}</p>
-            <p class="text-sm text-gray-700">Time: {{ $event['time'] }}</p>
+    <div class="mx-auto max-w-6xl px-5 py-10 md:py-14">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white shadow rounded-xl p-6">
+          <h3 class="font-semibold mb-2">When</h3>
+          <p class="text-sm text-gray-700">Date: {{ $event['date'] }}</p>
+          <p class="text-sm text-gray-700">Time: {{ $event['time'] }}</p>
+        </div>
+        <div class="bg-white shadow rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Where</h3>
+          <p class="text-sm text-gray-700">Venue: {{ $event['venue'] }}</p>
+          <p class="text-sm text-gray-700">Address: {{ $event['address'] }}</p>
+        </div>
+        <div class="bg-white shadow rounded-xl p-6">
+          <h3 class="font-semibold mb-2">What to know</h3>
+          <p class="text-sm text-gray-700">{!! $event['notes'] !!}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{-- Unified container with vertical rhythm between bubbles --}}
+  <div class="mx-auto max-w-6xl px-5 pb-14 space-y-8 md:space-y-12">
+
+    {{-- ========= PHOTOS (bubble) ========= --}}
+    <section id="photos" class="bubble">
+      <div class="bubble-inner">
+        <div class="flex items-end justify-between mb-6">
+          <div>
+            <h2 class="bubble-title">Photos</h2>
+            <p class="bubble-sub">Approved photos from classmates</p>
           </div>
-          <div class="bg-white shadow rounded-xl p-6">
-            <h3 class="font-semibold mb-2">Where</h3>
-            <p class="text-sm text-gray-700">Venue: {{ $event['venue'] }}</p>
-            <p class="text-sm text-gray-700">Address: {{ $event['address'] }}</p>
-          </div>
-          <div class="bg-white shadow rounded-xl p-6">
-            <h3 class="font-semibold mb-2">What to know</h3>
-            <p class="text-sm text-gray-700">{!! $event['notes'] !!}</p>
-          </div>
+          <a href="{{ route('photos.index') }}" class="hidden sm:inline-flex items-center rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700">
+            Upload Your Photos
+          </a>
+        </div>
+
+        <div class="masonry masonry-1 sm:masonry-2 lg:masonry-3 xl:masonry-4" wire:poll.30s.keep-alive="refreshPhotos">
+          @foreach($photos as $i => $p)
+            @php $url = Storage::disk($p->disk)->url($p->path); @endphp
+            <figure class="group avoid-column-break mb-4">
+              <button type="button" class="block w-full text-left"
+                      @click="openAt({{ $i }})" aria-label="Open photo">
+                <img src="{{ $url }}"
+                     alt="{{ $p->caption ?? 'Reunion photo' }}"
+                     class="w-full h-auto rounded-xl shadow-md hover:shadow-lg transition duration-300"
+                     loading="lazy">
+              </button>
+              @if($p->caption)
+                <figcaption class="mt-2 text-xs text-gray-600">{{ $p->caption }}</figcaption>
+              @endif
+             <livewire:reactions.bar :photo="$p->id" :key="'rx-'.$p->id" />
+            </figure>
+          @endforeach
+
+          @if($photos->isEmpty())
+            <div class="text-gray-600 text-sm">No approved photos yet. Be the first to upload!</div>
+          @endif
+        </div>
+
+        <div class="mt-6 sm:hidden text-center">
+          <a href="{{ route('photos.index') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700">
+            Upload Your Photos
+          </a>
         </div>
       </div>
     </section>
 
-    {{-- PHOTO COLLAGE (approved) --}}
-    <section class="mx-auto max-w-6xl px-5 py-12">
-      <div class="flex items-end justify-between mb-6">
-        <h2 class="text-xl md:text-2xl font-semibold">Photos</h2>
-        <p class="text-sm text-gray-500">Approved photos from classmates</p>
-      </div>
+    {{-- ========= MEMORY BOOK (bubble) ========= --}}
+    <section id="memory-book" class="bubble">
+      <div class="bubble-inner">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="bubble-title">Memory Book</h2>
+          <a href="{{ route('stories.new') }}" class="btn btn-secondary">Share Your Story</a>
+        </div>
 
-      <div class="masonry masonry-1 sm:masonry-2 lg:masonry-3 xl:masonry-4" wire:poll.30s.keep-alive="refreshPhotos">
-        @foreach($photos as $i => $p)
-          @php $url = Storage::disk($p->disk)->url($p->path); @endphp
-          <figure class="group avoid-column-break mb-4">
-            <button type="button" class="block w-full text-left"
-                    @click="openAt({{ $i }})" aria-label="Open photo">
-              <img src="{{ $url }}"
-                   alt="{{ $p->caption ?? 'Reunion photo' }}"
-                   class="w-full h-auto rounded-xl shadow-md hover:shadow-lg transition duration-300"
-                   loading="lazy">
-            </button>
-            @if($p->caption)
-              <figcaption class="mt-2 text-xs text-gray-600">{{ $p->caption }}</figcaption>
-            @endif
-
-            {{-- Reactions bar component expects an ID --}}
-            <livewire:reactions.bar :photo="$p->id" :key="'rx-'.$p->id" />
-          </figure>
-        @endforeach
-
-        @if($photos->isEmpty())
-          <div class="text-gray-600 text-sm">No approved photos yet. Be the first to upload!</div>
-        @endif
-      </div>
-
-      <div class="mt-8 text-center">
-        <a href="{{ route('photos.index') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700">
-          Upload Your Photos
-        </a>
+        <livewire:stories.wall :limit="18" />
       </div>
     </section>
 
-    {{-- Memory Book (full component) --}}
-    <livewire:stories.wall :limit="18" />
-  @endauth
+    {{-- ========= WHERE ARE WE NOW? (bubble) ========= --}}
+    <section id="where-now" class="bubble">
+      <div class="bubble-inner">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="bubble-title">Where are we now?</h2>
+            <p class="bubble-sub">Approximate city-level locations of classmates who opted in.</p>
+          </div>
+          <a href="{{ route('settings.location') }}" class="btn btn-secondary">Update my location</a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div class="lg:col-span-3">
+            <div class="rounded-xl overflow-hidden ring-1 ring-black/5" wire:ignore>
+              <div id="home-where-map" style="height: 420px;"></div>
+            </div>
+          </div>
+
+          <aside class="lg:col-span-1">
+            <div class="rounded-xl bg-white shadow ring-1 ring-black/5 p-4">
+              <h3 class="font-medium">Top cities</h3>
+              <ul class="mt-3 space-y-2">
+                @forelse($topCities as $c)
+                  <li class="flex items-center justify-between text-sm">
+                    <span>{{ $c['city'] ?: 'Unknown' }}, {{ $c['state'] }}</span>
+                    <span class="text-gray-600">{{ $c['count'] }}</span>
+                  </li>
+                @empty
+                  <li class="text-sm text-gray-500">No data yet.</li>
+                @endforelse
+              </ul>
+              <p class="mt-4 text-xs text-gray-500">Only opt-in classmates are shown.</p>
+            </div>
+          </aside>
+        </div>
+
+        {{-- Leaflet / cluster includes + init (make sure these are only included once per page) --}}
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+        <script>
+          (() => {
+            if (window._homeWhereMapInited) return;
+            window._homeWhereMapInited = true;
+
+            const data = @json($mapMarkers);
+            const el = document.getElementById('home-where-map');
+            if (!el) return;
+
+            const map = L.map(el, { worldCopyJump: true });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              maxZoom: 18, attribution: '&copy; OpenStreetMap',
+            }).addTo(map);
+
+            const cluster = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true });
+            const bounds = [];
+            (data || []).forEach(p => {
+              if (!p.lat || !p.lng) return;
+              const m = L.marker([p.lat, p.lng]);
+              m.bindPopup(`<div class="text-sm"><div class="font-medium">${p.name}</div><div class="text-gray-600">${p.label}</div></div>`);
+              cluster.addLayer(m);
+              bounds.push([p.lat, p.lng]);
+            });
+            map.addLayer(cluster);
+            bounds.length ? map.fitBounds(bounds, { padding: [24,24] }) : map.setView([20,0], 2);
+          })();
+        </script>
+      </div>
+    </section>
+
+  </div>
+@endauth
 
   {{-- ==================== GUEST CONTENT (NO PHOTOS OR STORIES) ==================== --}}
   @guest

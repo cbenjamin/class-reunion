@@ -10,7 +10,7 @@
 
 <div class="mt-12 mx-auto max-w-6xl px-4 md:px-6">
   <div class="flex items-end justify-between mb-4">
-    <h2 class="text-xl md:text-2xl font-semibold">Memory Book</h2>
+    <h2 class="text-xl md:text-2xl font-semibold"></h2>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

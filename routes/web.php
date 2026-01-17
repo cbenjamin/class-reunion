@@ -24,6 +24,14 @@ use App\Livewire\Admin\IdeasModeration;
 use App\Livewire\Memorial\Submit as MemorialSubmit;
 use App\Livewire\Memorial\Wall as MemorialWall;
 use App\Livewire\Admin\MemorialModeration;
+use App\Livewire\Settings\Location as SettingsLocation;
+use App\Livewire\Map\WhereNow;
+
+// Location settings (approved users)
+Route::middleware(['auth','approved'])->group(function () {
+    Route::get('/settings/location', SettingsLocation::class)->name('settings.location');
+    Route::get('/map/where-now', WhereNow::class)->name('map.where');
+});
 
 // Public memorial wall
 Route::get('/memorials', MemorialWall::class)->name('memorials.wall');

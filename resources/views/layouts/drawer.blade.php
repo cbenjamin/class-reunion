@@ -40,6 +40,8 @@
           <a class="block px-2 py-1 rounded {{ request()->routeIs('stories.new') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}" href="{{ route('stories.new') }}">Share a Story</a>
           <a class="block px-2 py-1 rounded {{ request()->routeIs('ideas.new') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
    href="{{ route('ideas.new') }}">Suggest an Idea</a>
+          <a class="block px-2 py-1 rounded {{ request()->routeIs('map.where') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
+   href="{{ route('map.where') }}">Where are we now?</a>
           <a class="block px-2 py-1 rounded {{ request()->routeIs('memorials.wall') ? 'bg-gray-100 text-gray-900' : 'hover:bg-gray-50' }}"
    href="{{ route('memorials.wall') }}">Memorial Wall</a>
 
