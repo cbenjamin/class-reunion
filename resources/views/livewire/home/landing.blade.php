@@ -1,4 +1,4 @@
-<div class="relative" x-data="landingPage(@js($galleryItems))">
+<div id="landing-root" class="relative" x-data="landingPage(@js($galleryItems))">
   {{-- HERO (parallax) --}}
   <section class="relative h-[70vh] min-h-[520px] overflow-hidden">
     <div class="absolute inset-0" x-ref="hero" :style="heroStyle">
@@ -106,6 +106,7 @@
                 @if($p->caption)
                   <figcaption class="mt-2 text-xs text-gray-600">{{ $p->caption }}</figcaption>
                 @endif
+
                 <livewire:reactions.bar :photo="$p->id" :key="'rx-'.$p->id" />
               </figure>
             @endforeach
@@ -170,40 +171,6 @@
               </div>
             </aside>
           </div>
-
-          {{-- Leaflet / cluster includes + init --}}
-          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-          <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-          <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
-          <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-          <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-          <script>
-            (() => {
-              if (window._homeWhereMapInited) return;
-              window._homeWhereMapInited = true;
-
-              const data = @json($mapMarkers);
-              const el = document.getElementById('home-where-map');
-              if (!el) return;
-
-              const map = L.map(el, { worldCopyJump: true });
-              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18, attribution: '&copy; OpenStreetMap',
-              }).addTo(map);
-
-              const cluster = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true });
-              const bounds = [];
-              (data || []).forEach(p => {
-                if (!p.lat || !p.lng) return;
-                const m = L.marker([p.lat, p.lng]);
-                m.bindPopup(`<div class="text-sm"><div class="font-medium">${p.name}</div><div class="text-gray-600">${p.label}</div></div>`);
-                cluster.addLayer(m);
-                bounds.push([p.lat, p.lng]);
-              });
-              map.addLayer(cluster);
-              bounds.length ? map.fitBounds(bounds, { padding: [24,24] }) : map.setView([20,0], 2);
-            })();
-          </script>
         </div>
       </section>
 
@@ -232,6 +199,7 @@
       </div>
     </section>
 
+    {{-- How it works + Stats --}}
     <section class="bg-white/60">
       <div class="mx-auto max-w-6xl px-5 py-14">
         <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-start -mx-2.5">
@@ -241,15 +209,15 @@
                 <h2 class="text-2xl font-semibold">How it works</h2>
                 <ol class="mt-6 space-y-5">
                   <li class="flex items-start gap-3">
-                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">1</span>
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">1</span>
                     <p class="text-sm text-gray-700 leading-6"><strong>Request an invitation</strong> with your name and graduation year.</p>
                   </li>
                   <li class="flex items-start gap-3">
-                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">2</span>
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">2</span>
                     <p class="text-sm text-gray-700 leading-6"><strong>Get approved & set your password</strong> via a secure link emailed to you.</p>
                   </li>
                   <li class="flex items-start gap-3">
-                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">3</span>
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">3</span>
                     <p class="text-sm text-gray-700 leading-6"><strong>Unlock the dashboard</strong> to see event details, upload photos, and add your Memory Book story.</p>
                   </li>
                 </ol>
@@ -341,17 +309,15 @@
     </div>
   </div>
 
-  {{-- Minimal parallax + gallery helper --}}
+  {{-- Alpine helper (inline is fine; inside the single root) --}}
   <script>
     function landingPage(items){
       return {
-        // Parallax
         heroY: 0, bandY: 0,
         get heroStyle(){ return `transform: translate3d(0, ${this.heroY}px, 0)`; },
         get bandStyle(){ return `transform: translate3d(0, ${this.bandY}px, 0)`; },
         onScroll(){ const y = window.scrollY || 0; this.heroY = y * 0.25; this.bandY = y * 0.10; },
 
-        // Gallery (only used for authed users)
         items: items || [],
         open: false,
         index: 0,
@@ -366,3 +332,43 @@
     }
   </script>
 </div>
+
+@push('styles')
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+@endpush
+
+@push('scripts')
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script>
+    window.initHomeWhereMap = function(markers){
+      const el = document.getElementById('home-where-map');
+      if (!el) return;
+
+      const map = L.map(el, { worldCopyJump: true });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18, attribution: '&copy; OpenStreetMap',
+      }).addTo(map);
+
+      const cluster = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true });
+      const bounds = [];
+      (markers || []).forEach(p => {
+        if (!p.lat || !p.lng) return;
+        const m = L.marker([p.lat, p.lng]);
+        m.bindPopup(`<div class="text-sm"><div class="font-medium">${p.name}</div><div class="text-gray-600">${p.label}</div></div>`);
+        cluster.addLayer(m);
+        bounds.push([p.lat, p.lng]);
+      });
+      map.addLayer(cluster);
+      bounds.length ? map.fitBounds(bounds, { padding: [24,24] }) : map.setView([20,0], 2);
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.getElementById('home-where-map')) {
+        window.initHomeWhereMap(@json($mapMarkers));
+      }
+    });
+  </script>
+@endpush
