@@ -7,6 +7,7 @@
   <title>{{ $title ?? config('app.name', 'Reunion') }}</title>
   @vite(['resources/css/app.css','resources/js/app.js'])
   @livewireStyles
+  @stack('head')
   @auth
     <!-- PushAlert Unified Code -->
   <script type="text/javascript">
@@ -34,5 +35,6 @@
   </main>
 
   @livewireScripts
+  @stack('scripts')
 </body>
 </html>
