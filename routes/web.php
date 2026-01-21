@@ -31,40 +31,24 @@ use App\Livewire\Map\WhereNow;
 Route::middleware(['auth','approved'])->group(function () {
     Route::get('/settings/location', SettingsLocation::class)->name('settings.location');
     Route::get('/map/where-now', WhereNow::class)->name('map.where');
+    Route::get('/memorials/new', MemorialSubmit::class)->name('memorials.submit');
+    Route::get('/ideas/new', IdeasSubmit::class)->name('ideas.new');
+    Route::get('/memorials', MemorialWall::class)->name('memorials.wall');
 });
 
 // Public memorial wall
-Route::get('/memorials', MemorialWall::class)->name('memorials.wall');
-
-// Submit memorial (require login so we have accountability; change to public if desired)
-Route::middleware(['auth','approved'])->group(function () {
-    Route::get('/memorials/new', MemorialSubmit::class)->name('memorials.submit');
-});
 
 // Admin moderation
 Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('/admin/memorials', MemorialModeration::class)->name('admin.memorials');
-});
-
-// User form (require login + approval)
-Route::middleware(['auth','approved'])->group(function () {
-    Route::get('/ideas/new', IdeasSubmit::class)->name('ideas.new');
-});
-
-// Admin moderation
-Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('/admin/ideas', IdeasModeration::class)->name('admin.ideas.index');
-});
-
-
-Route::middleware(['auth','can:admin'])->group(function () {
-    // …existing admin routes
     Route::get('/admin/users', UsersIndex::class)->name('admin.users.index');
+    Route::get('/admin/event', AdminEventSettings::class)->name('admin.event');
+    Route::get('/admin/invites', InvitesQueue::class)->name('admin.invites.index');
+    Route::get('/admin/photos', PhotosModeration::class)->name('admin.photos.index');
+    Route::get('/admin/stories', AdminStories::class)->name('admin.stories.index');
 });
 
-Route::middleware(['auth','can:admin'])->group(function () {
-    Route::get('/admin/event', AdminEventSettings::class)->name('admin.event');
-});
 
 // Replace any redirect('/') with:
 Route::get('/', Landing::class)->name('home');
@@ -74,12 +58,12 @@ Route::get('/', Landing::class)->name('home');
 // Invitation flow (public)
 Route::get('/request-invite', RequestForm::class)->name('invite.create');
 Route::get('/invite/approve/{token}', Consume::class)->name('invite.consume');
+// Pending approval page
+Route::view('/pending-approval', 'auth.pending-approval')->name('pending-approval');
 
 // Auth scaffolding (Breeze)
 require __DIR__.'/auth.php';
 
-// Pending approval page
-Route::view('/pending-approval', 'auth.pending-approval')->name('pending-approval');
 
 // Authenticated + approved
 Route::middleware(['auth','approved'])->group(function () {
@@ -89,12 +73,6 @@ Route::middleware(['auth','approved'])->group(function () {
     Route::get('/stories/new', StoriesWizard::class)->name('stories.new');
 });
 
-// Admin moderation (auth only; gate inside components)
-Route::middleware(['auth','can:admin'])->group(function () {
-    Route::get('/admin/invites', InvitesQueue::class)->name('admin.invites.index');
-    Route::get('/admin/photos', PhotosModeration::class)->name('admin.photos.index');
-    Route::get('/admin/stories', AdminStories::class)->name('admin.stories.index');
-});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

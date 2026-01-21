@@ -7,6 +7,7 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   @stack('styles')
   @livewireStyles
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer">
  @auth
     <!-- PushAlert Unified Code -->
   <script type="text/javascript">

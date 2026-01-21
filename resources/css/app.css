@@ -15,6 +15,7 @@
   .bubble-inner { @apply p-6 sm:p-8; }
   .bubble-title { @apply text-xl md:text-2xl font-semibold; }
   .bubble-sub { @apply text-sm text-gray-500; }
+  [x-cloak]{ display:none !important; }
 }
 
 /* Masonry helpers */

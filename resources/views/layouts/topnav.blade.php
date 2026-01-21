@@ -8,10 +8,8 @@
       <div class="flex items-center gap-3">
         {{-- Hamburger shows on desktop & mobile, only when logged in --}}
         @auth
-          <button
-            type="button"
+          <button @click="toggle()"
             class="inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
-            @click="drawer = true"
             aria-label="Open navigation"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor">

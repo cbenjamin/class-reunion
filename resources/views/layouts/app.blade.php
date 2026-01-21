@@ -8,6 +8,7 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   @livewireStyles
   @stack('head')
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer">
   @auth
     <!-- PushAlert Unified Code -->
   <script type="text/javascript">
@@ -22,19 +23,64 @@
   @endauth
 </head>
 {{-- One Alpine scope for the whole page; drawer works on desktop & mobile --}}
-<body class="font-sans antialiased bg-gray-100" x-data="{ drawer:false }" @keydown.window.escape="drawer=false">
-  {{-- Top bar (kept solid on app pages) --}}
+<body class="font-sans antialiased bg-gray-100"
+      x-data="navState()"
+      @keydown.window.escape="drawer=false">
   @include('layouts.topnav', ['variant' => 'solid'])
-
-  {{-- Off-canvas drawer (hamburger opens this) --}}
   @include('layouts.drawer')
 
-  {{-- Main content (no static sidebar; drawer replaces it) --}}
   <main class="min-h-screen">
     {{ $slot }}
   </main>
 
   @livewireScripts
-  @stack('scripts')
+
+  <script>
+    function navState(){
+      const KEY_PIN = 'nav:pinned';
+      const KEY_OPEN = 'nav:open';
+      const mq = window.matchMedia('(min-width: 1024px)');
+
+      return {
+        drawer: false,
+        pinned: false,
+        isDesk: mq.matches,
+
+        init(){
+          // load persisted state
+          this.pinned = localStorage.getItem(KEY_PIN) === '1';
+          const persistedOpen = localStorage.getItem(KEY_OPEN) === '1';
+
+          // default behavior
+          this.drawer = this.pinned ? true : (this.isDesk ? true : persistedOpen);
+
+          // watch & persist
+          this.$watch('pinned', v => {
+            localStorage.setItem(KEY_PIN, v ? '1' : '0');
+            if (!v && !this.isDesk) this.drawer = false;
+          });
+          this.$watch('drawer', v => localStorage.setItem(KEY_OPEN, v ? '1' : '0'));
+
+          // respond to viewport changes
+          const onChange = e => {
+            this.isDesk = e.matches;
+            if (this.isDesk) {
+              if (!this.drawer && (this.pinned || localStorage.getItem(KEY_OPEN) !== '0')) {
+                this.drawer = true;
+              }
+            } else {
+              if (!this.pinned) this.drawer = false;
+            }
+          };
+          mq.addEventListener ? mq.addEventListener('change', onChange) : mq.addListener(onChange);
+        },
+
+        toggle(){ this.drawer = !this.drawer; },
+        togglePin(){ this.pinned = !this.pinned; },
+        closeOnMobile(){ if (!this.isDesk && !this.pinned) this.drawer = false; },
+      }
+    }
+  </script>
+    @stack('scripts')
 </body>
 </html>
