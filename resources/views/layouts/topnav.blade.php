@@ -12,18 +12,23 @@
     <div class="h-14 flex items-center justify-between">
       <div class="flex items-center gap-3">
         {{-- Hamburger: opens the drawer (works on desktop & mobile) --}}
-        <button
-          type="button"
-          class="inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-gray-100 focus:outline-none"
-          @click.stop="drawer = true"
-          :aria-expanded="drawer ? 'true' : 'false'"
-          aria-controls="app-drawer"
-          aria-label="Open navigation"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/>
-          </svg>
-        </button>
+@php $mode = $hamburgerMode ?? 'mobile'; @endphp
+
+@if($mode === 'always')
+  {{-- Show hamburger on all breakpoints --}}
+  <button @click="drawer=true"
+          class="inline-flex items-center justify-center h-10 w-10 rounded-md hover:bg-white/10"
+          aria-label="Open navigation">
+    <i class="fa-solid fa-bars text-white"></i>
+  </button>
+@else
+  {{-- Show hamburger only on mobile (sidebar handles md+) --}}
+  <button @click="drawer=true"
+          class="inline-flex md:hidden items-center justify-center h-10 w-10 rounded-md hover:bg-white/10"
+          aria-label="Open navigation">
+    <i class="fa-solid fa-bars text-white"></i>
+  </button>
+@endif
 
         <a href="{{ route('home') }}" class="flex items-center gap-2" aria-label="{{ config('app.name') }}">
           <img src="{{ asset('images/logo.svg') }}" alt="{{ config('app.name') }}" class="h-10 w-auto">

@@ -1,52 +1,50 @@
 <div id="landing-root" class="relative" x-data="landingPage(@js($galleryItems))">
   {{-- HERO (parallax) --}}
-  <section class="relative h-[70vh] min-h-[520px] overflow-hidden">
-    <div class="absolute inset-0" x-ref="hero" :style="heroStyle">
-      @auth
-        @if($heroUrl)
-          <img src="{{ $heroUrl }}" alt="Reunion hero"
-               class="h-full w-full object-cover will-change-transform select-none pointer-events-none" loading="eager">
-        @else
-          <div class="h-full w-full bg-gradient-to-br from-black via-red-700 to-black"></div>
-        @endif
-      @else
-        <div class="h-full w-full bg-gradient-to-br from-black via-red-700 to-black"></div>
-      @endauth
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10"></div>
-    </div>
+<section class="relative h-[70vh] min-h-[520px] overflow-hidden">
+  <div class="absolute inset-0" x-ref="hero" :style="heroStyle">
+    <!-- Animated gradient + slow pan -->
+    <div class="animated-hero-bg animate-gradient-pan"></div>
 
-    <div class="relative z-10 h-full">
-      <div class="mx-auto max-w-6xl h-full px-5 flex items-center">
-        <div class="text-white">
-          <p class="text-xs uppercase tracking-widest/relaxed opacity-90">Class Reunion</p>
-          <h1 class="mt-1 text-4xl md:text-6xl font-bold leading-tight">{{ $event['name'] ?? config('app.name') }}</h1>
-          <p class="mt-3 text-lg md:text-xl opacity-90">
-            {{ $event['date'] ?? 'TBD' }} • {{ $event['time'] ?? '' }}
+    <!-- Soft floating red glows (you already have these styles) -->
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+
+    <!-- Dark top overlay for text contrast -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10"></div>
+  </div>
+
+  <div class="relative z-10 h-full">
+    <div class="mx-auto max-w-6xl h-full px-5 flex items-center">
+      <div class="text-white">
+        <p class="text-xs uppercase tracking-widest/relaxed opacity-90">Class Reunion</p>
+        <h1 class="mt-1 text-4xl md:text-6xl font-bold leading-tight">{{ $event['name'] ?? config('app.name') }}</h1>
+        <p class="mt-3 text-lg md:text-xl opacity-90">
+          {{ $event['date'] ?? 'TBD' }} • {{ $event['time'] ?? '' }}
+        </p>
+        @if(($event['venue'] ?? null) || ($event['address'] ?? null))
+          <p class="mt-1 text-sm md:text-base opacity-90">
+            {{ $event['venue'] ?? '' }} @if(($event['venue'] ?? null) && ($event['address'] ?? null)) • @endif {{ $event['address'] ?? '' }}
           </p>
-          @if(($event['venue'] ?? null) || ($event['address'] ?? null))
-            <p class="mt-1 text-sm md:text-base opacity-90">
-              {{ $event['venue'] ?? '' }} @if(($event['venue'] ?? null) && ($event['address'] ?? null)) • @endif {{ $event['address'] ?? '' }}
-            </p>
-          @endif
+        @endif
 
-          <div class="mt-6 flex flex-wrap gap-3">
-            @auth
-              <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
-                Go to Dashboard
-              </a>
-            @else
-              <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
-                Request Invitation
-              </a>
-              <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium hover:bg-white/10">
-                Log In
-              </a>
-            @endauth
-          </div>
+        <div class="mt-6 flex flex-wrap gap-3">
+          @auth
+            <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
+              Go to Dashboard
+            </a>
+          @else
+            <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
+              Request Invitation
+            </a>
+            <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium hover:bg-white/10">
+              Log In
+            </a>
+          @endauth
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   {{-- ==================== LOGGED-IN CONTENT ==================== --}}
   @auth
@@ -333,42 +331,67 @@
   </script>
 </div>
 
-@push('styles')
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
-@endpush
+@once
+  {{-- Styles into <head> --}}
+  @push('head')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+  @endpush
 
-@push('scripts')
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-  <script>
-    window.initHomeWhereMap = function(markers){
-      const el = document.getElementById('home-where-map');
-      if (!el) return;
+  {{-- Scripts before </body> (make sure your layout has @stack('scripts')) --}}
+  @push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script>
+      (function () {
+        function initWhereNow() {
+          const el = document.getElementById('home-where-map');
+          if (!el) return;
 
-      const map = L.map(el, { worldCopyJump: true });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18, attribution: '&copy; OpenStreetMap',
-      }).addTo(map);
+          // Prevent double-initialization on soft navigations
+          if (el.dataset.inited === '1') return;
+          el.dataset.inited = '1';
 
-      const cluster = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true });
-      const bounds = [];
-      (markers || []).forEach(p => {
-        if (!p.lat || !p.lng) return;
-        const m = L.marker([p.lat, p.lng]);
-        m.bindPopup(`<div class="text-sm"><div class="font-medium">${p.name}</div><div class="text-gray-600">${p.label}</div></div>`);
-        cluster.addLayer(m);
-        bounds.push([p.lat, p.lng]);
-      });
-      map.addLayer(cluster);
-      bounds.length ? map.fitBounds(bounds, { padding: [24,24] }) : map.setView([20,0], 2);
-    };
+          const map = L.map(el, { worldCopyJump: true });
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap',
+          }).addTo(map);
 
-    document.addEventListener('DOMContentLoaded', () => {
-      if (document.getElementById('home-where-map')) {
-        window.initHomeWhereMap(@json($mapMarkers));
-      }
-    });
-  </script>
-@endpush
+          const markers = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            spiderfyOnMaxZoom: true
+          });
+
+          const data = @json($mapMarkers ?? []);
+          const bounds = [];
+
+          (data || []).forEach(p => {
+            if (!p.lat || !p.lng) return;
+            const m = L.marker([p.lat, p.lng]);
+            m.bindPopup(
+              `<div class="text-sm">
+                 <div class="font-medium">${p.name}</div>
+                 <div class="text-gray-600">${p.label}</div>
+               </div>`
+            );
+            markers.addLayer(m);
+            bounds.push([p.lat, p.lng]);
+          });
+
+          map.addLayer(markers);
+          if (bounds.length) {
+            map.fitBounds(bounds, { padding: [30, 30] });
+          } else {
+            map.setView([20, 0], 2);
+          }
+        }
+
+        // First load + Livewire soft navs
+        document.addEventListener('DOMContentLoaded', initWhereNow);
+        document.addEventListener('livewire:navigated', initWhereNow);
+      })();
+    </script>
+  @endpush
+@endonce

@@ -16,6 +16,50 @@
   .bubble-title { @apply text-xl md:text-2xl font-semibold; }
   .bubble-sub { @apply text-sm text-gray-500; }
   [x-cloak]{ display:none !important; }
+    .hero-blob {
+    position: absolute;
+    width: 60vmax;
+    aspect-ratio: 1 / 1;
+    border-radius: 9999px;
+    filter: blur(48px);
+    opacity: 0.55;
+    mix-blend-mode: screen; /* makes the red glow blend nicely over dark */
+    will-change: transform;
+    pointer-events: none;
+  }
+  .hero-blob.b1 {
+    /* slightly brighter red core */
+    background: radial-gradient(closest-side, rgba(239,68,68,0.45), rgba(239,68,68,0) 70%);
+    transform: translate(-20%, -10%);
+    animation: blob-move-1 15s ease-in-out infinite alternate;
+  }
+  .hero-blob.b2 {
+    /* deeper red, a bit dimmer */
+    background: radial-gradient(closest-side, rgba(185,28,28,0.35), rgba(185,28,28,0) 70%);
+    transform: translate(40%, 20%);
+    animation: blob-move-2 15s ease-in-out infinite alternate;
+  }
+  .animated-hero-bg{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #000 0%, #b91c1c 50%, #000 100%);
+  }
+  @keyframes blob-move-1 {
+    0%   { transform: translate(-20%, -10%) scale(1); }
+    50%  { transform: translate(10%, -5%)   scale(1.08); }
+    100% { transform: translate(30%, 15%)   scale(0.98); }
+  }
+  @keyframes blob-move-2 {
+    0%   { transform: translate(40%, 20%)   scale(1); }
+    50%  { transform: translate(5%, 25%)    scale(1.07); }
+    100% { transform: translate(-15%, -5%)  scale(1.02); }
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-gradient-pan { animation: none !important; }
+    .hero-blob { animation: none !important; }
+  }
 }
 
 /* Masonry helpers */
@@ -32,4 +76,15 @@
   @screen sm { .masonry-2 { column-count: 2; } }
   @screen lg { .masonry-3 { column-count: 3; } }
   @screen xl { .masonry-4 { column-count: 4; } }
+    /* Slow drift of the linear gradient so the red subtly shifts */
+  .animate-gradient-pan {
+    background-size: 200% 200%;
+    animation: gradient-pan 15s ease-in-out infinite alternate;
+  }
+  @keyframes gradient-pan {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
 }
+
+
