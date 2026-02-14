@@ -40,7 +40,6 @@
             @if($rsvpEnabled)
               <a href="{{ route('rsvp.form') }}"
                  class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
-                <i class="fa-solid fa-clipboard-check {{ request()->routeIs('rsvp.form') ? 'text-red-600' : 'text-gray-500' }}"></i>
                 <span>RSVP</span>
               </a>
             @endif

@@ -8,6 +8,7 @@
 
   {{-- Assets (only once) --}}
   @include('layouts.partials.assets')
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer">
   @livewireStyles
   @stack('head')
   @auth
