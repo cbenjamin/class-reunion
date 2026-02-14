@@ -11,15 +11,16 @@
   <div class="mx-auto max-w-7xl px-4">
     <div class="h-14 flex items-center justify-between">
       <div class="flex items-center gap-3">
-      @php $mode = $hamburgerMode ?? 'mobile'; @endphp
 
+      @auth
+      @php $mode = $hamburgerMode ?? 'mobile'; @endphp
         {{-- Show hamburger only on mobile (sidebar handles md+) --}}
         <button @click="drawer=true"
                 class="inline-flex md:hidden items-center justify-center h-10 w-10 rounded-md hover:bg-white/10"
                 aria-label="Open navigation">
           <i class="fa-solid fa-bars text-black"></i>
         </button>
-
+      @endauth
         <a href="{{ route('home') }}" class="flex items-center gap-2" aria-label="{{ config('app.name') }}">
           <img src="{{ asset('images/logo.svg') }}" alt="{{ config('app.name') }}" class="h-10 w-auto">
         </a>

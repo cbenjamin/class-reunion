@@ -12,13 +12,23 @@
     <div class="mx-auto max-w-6xl h-full px-5 flex items-center">
 
       {{-- Content wrapper (adds subtle entrance) --}}
-      <div x-data="{ show:false }" x-init="requestAnimationFrame(()=>show=true)"
-           :class="show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'"
-           class="transition duration-700 ease-out">
+      <div
+  x-data="{
+    inView: false,
+    observe(el) {
+      const io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { this.inView = true; io.disconnect(); }
+      }, { threshold: 0.25 });
+      io.observe(el);
+    }
+  }"
+  x-init="observe($el)"
+  x-cloak
+>
 
         {{-- Glass “hero card” --}}
-        <div class="w-full md:max-w-4xl lg:max-w-5xl rounded-3xl bg-white/10 backdrop-blur-md ring-1 ring-white/15 shadow-2xl p-6 sm:p-8">
-          <div class="flex flex-wrap items-center gap-2">
+        <div :class="inView ? 'animate-hero-float' : ''" class="w-full md:max-w-4xl lg:max-w-5xl rounded-3xl bg-white/10 backdrop-blur-md ring-1 ring-white/15 shadow-2xl p-6 sm:p-8">
+          <div class=" :class="inView ? 'hero-reveal is-in hero-delay-1' : 'hero-reveal'" flex flex-wrap items-center gap-2">
             <span class="text-[11px] uppercase tracking-widest/relaxed text-white/80">
               Class Reunion
             </span>
@@ -48,16 +58,16 @@
             @endif
           </div>
 
-          <h1 class="mt-2 text-4xl md:text-6xl font-bold leading-tight text-white">
+          <h1 :class="inView ? 'hero-reveal is-in hero-delay-2' : 'hero-reveal'" class="mt-2 text-4xl md:text-6xl font-bold leading-tight text-white">
             {{ $event['name'] ?? config('app.name') }}
           </h1>
 
-          <p class="mt-3 text-lg md:text-xl text-white/85">
+          <p :class="inView ? 'hero-reveal is-in hero-delay-3' : 'hero-reveal'" class="mt-3 text-lg md:text-xl text-white/85">
             {{ $event['date'] ?? 'TBD' }} • {{ $event['time'] ?? '' }}
           </p>
 
           @if(($event['venue'] ?? null) || ($event['address'] ?? null))
-            <p class="mt-1 text-sm md:text-base text-white/75">
+            <p :class="inView ? 'hero-reveal is-in hero-delay-4' : 'hero-reveal'" class="mt-1 text-sm md:text-base text-white/75">
               {{ $event['venue'] ?? '' }}
               @if(($event['venue'] ?? null) && ($event['address'] ?? null)) • @endif
               {{ $event['address'] ?? '' }}
@@ -65,10 +75,11 @@
           @endif
 
           {{-- Buttons --}}
-          <div class="mt-6 flex flex-wrap gap-3">
+          <div :class="inView ? 'hero-reveal is-in hero-delay-5' : 'hero-reveal'" class="mt-6 flex flex-wrap gap-3">
             @auth
               <a href="{{ route('dashboard') }}"
-                 class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
+                 class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium
+       transition transform hover:-translate-y-0.5 hover:bg-white active:translate-y-0">
                 Go to Dashboard
               </a>
 
@@ -78,16 +89,19 @@
 
               @if($rsvpEnabled)
                 <a href="{{ route('rsvp.form') }}"
-                   class="inline-flex items-center rounded-lg bg-red-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-red-700">
+                   class="inline-flex items-center rounded-lg bg-red-600 text-white px-5 py-2.5 text-sm font-medium
+       transition transform hover:-translate-y-0.5 hover:bg-red-700 active:translate-y-0">
                   RSVP
                 </a>
               @endif
             @else
-              <a href="{{ route('invite.create') }}"
+              <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium
+       transition transform hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0"
                  class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
                 Request Invitation
               </a>
-              <a href="{{ route('login') }}"
+              <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium
+       transition transform hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0"
                  class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium hover:bg-white/10">
                 Log In
               </a>
@@ -96,7 +110,7 @@
 
           {{-- Quick jump links (makes the hero feel interactive) --}}
           @auth
-            <div class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/75">
+            <div :class="inView ? 'hero-reveal is-in hero-delay-6' : 'hero-reveal'" class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/75">
               <a href="#photos" class="hover:text-white underline underline-offset-4 decoration-white/30">Photos</a>
               <a href="#memory-book" class="hover:text-white underline underline-offset-4 decoration-white/30">Memory Book</a>
               <a href="#where-now" class="hover:text-white underline underline-offset-4 decoration-white/30">Where are we now?</a>
@@ -122,6 +136,14 @@
       </div>
     </div>
   </div>
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
+  <a href="#photos" class="group inline-flex flex-col items-center text-white/70 hover:text-white transition">
+    <span class="text-[11px] uppercase tracking-widest">Scroll</span>
+    <svg class="mt-2 h-5 w-5 animate-scroll-bounce" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fill-rule="evenodd" d="M10 14a1 1 0 0 1-.7-.3l-5-5a1 1 0 1 1 1.4-1.4L10 11.6l4.3-4.3a1 1 0 0 1 1.4 1.4l-5 5A1 1 0 0 1 10 14z" clip-rule="evenodd"/>
+    </svg>
+  </a>
+</div>
 </section>
 
   {{-- ==================== LOGGED-IN CONTENT ==================== --}}
