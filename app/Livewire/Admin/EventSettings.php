@@ -17,10 +17,12 @@ class EventSettings extends Component
     public ?string $venue = null;
     public ?string $address = null;
     public ?string $details = null;      // HTML from Quill
+    public bool $rsvp_enabled = false;
 
     public function mount(): void
     {
         $s = EventSetting::query()->first();
+
         if ($s) {
             $this->id         = $s->id;
             $this->event_name = $s->event_name;
@@ -29,18 +31,20 @@ class EventSettings extends Component
             $this->venue      = $s->venue;
             $this->address    = $s->address;
             $this->details    = $s->details;
+            $this->rsvp_enabled = (bool) ($s->rsvp_enabled ?? false);
         }
     }
 
     public function rules(): array
     {
         return [
-            'event_name' => ['nullable','string','max:120'],
-            'event_date' => ['nullable','date'],
-            'event_time' => ['nullable','string','max:120'],
-            'venue'      => ['nullable','string','max:160'],
-            'address'    => ['nullable','string','max:240'],
-            'details'    => ['nullable','string'],
+            'event_name'   => ['nullable', 'string', 'max:120'],
+            'event_date'   => ['nullable', 'date'],
+            'event_time'   => ['nullable', 'string', 'max:120'],
+            'venue'        => ['nullable', 'string', 'max:160'],
+            'address'      => ['nullable', 'string', 'max:240'],
+            'details'      => ['nullable', 'string'],
+            'rsvp_enabled'  => ['required', 'boolean'],
         ];
     }
 
@@ -52,13 +56,14 @@ class EventSettings extends Component
             ? EventSetting::findOrFail($this->id)
             : new EventSetting();
 
+        $data['rsvp_enabled'] = (bool) $this->rsvp_enabled;
+
         $s->fill($data);
         $s->save();
 
         $this->id = $s->id;
 
         session()->flash('status', 'Event settings saved.');
-        // Optionally tell other components to refresh
         $this->dispatch('event-settings-updated');
     }
 

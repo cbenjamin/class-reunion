@@ -26,6 +26,8 @@ use App\Livewire\Memorial\Wall as MemorialWall;
 use App\Livewire\Admin\MemorialModeration;
 use App\Livewire\Settings\Location as SettingsLocation;
 use App\Livewire\Map\WhereNow;
+use App\Livewire\Rsvp\Form as RsvpForm;
+use App\Livewire\Admin\RsvpsIndex;
 
 // Location settings (approved users)
 Route::middleware(['auth','approved'])->group(function () {
@@ -34,9 +36,12 @@ Route::middleware(['auth','approved'])->group(function () {
     Route::get('/memorials/new', MemorialSubmit::class)->name('memorials.submit');
     Route::get('/ideas/new', IdeasSubmit::class)->name('ideas.new');
     Route::get('/memorials', MemorialWall::class)->name('memorials.wall');
+    Route::get('/rsvp', RsvpForm::class)->name('rsvp.form');
+    Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
+    Route::get('/photos', PhotosManager::class)->name('photos.index');
+    Route::post('/photos/{photo}/react.json', [PhotoReactionController::class, 'storeJson'])->name('photos.react.json')->middleware('auth');
+    Route::get('/stories/new', StoriesWizard::class)->name('stories.new');
 });
-
-// Public memorial wall
 
 // Admin moderation
 Route::middleware(['auth','can:admin'])->group(function () {
@@ -47,6 +52,7 @@ Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('/admin/invites', InvitesQueue::class)->name('admin.invites.index');
     Route::get('/admin/photos', PhotosModeration::class)->name('admin.photos.index');
     Route::get('/admin/stories', AdminStories::class)->name('admin.stories.index');
+    Route::get('/admin/rsvps', RsvpsIndex::class)->name('admin.rsvps.index');
 });
 
 
@@ -63,15 +69,6 @@ Route::view('/pending-approval', 'auth.pending-approval')->name('pending-approva
 
 // Auth scaffolding (Breeze)
 require __DIR__.'/auth.php';
-
-
-// Authenticated + approved
-Route::middleware(['auth','approved'])->group(function () {
-    Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
-    Route::get('/photos', PhotosManager::class)->name('photos.index');
-    Route::post('/photos/{photo}/react.json', [PhotoReactionController::class, 'storeJson'])->name('photos.react.json')->middleware('auth');
-    Route::get('/stories/new', StoriesWizard::class)->name('stories.new');
-});
 
 
 Route::middleware('auth')->group(function () {

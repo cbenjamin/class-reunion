@@ -69,6 +69,30 @@
 
       @error('details') <p class="help">{{ $message }}</p> @enderror
     </div>
+
+    <div class="bg-white shadow rounded-xl p-6">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h3 class="font-semibold">Enable RSVP</h3>
+          <p class="text-sm text-gray-600 mt-1">
+            Turn this on to allow classmates to RSVP.
+          </p>
+        </div>
+
+        <label class="inline-flex items-center gap-2 select-none">
+          <input
+            type="checkbox"
+            class="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-600"
+            wire:model.live="rsvp_enabled"
+          />
+          <span class="text-sm font-medium text-gray-800">Enabled</span>
+        </label>
+      </div>
+
+      @error('rsvp_enabled')
+        <p class="help">{{ $message }}</p>
+      @enderror
+    </div>
     
     <div class="pt-2">
       <button wire:click="save" class="btn btn-primary">Save Settings</button>

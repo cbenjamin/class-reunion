@@ -106,6 +106,11 @@
         <i class="fa-solid fa-users {{ request()->routeIs('admin.users.*') ? 'text-red-600' : 'text-gray-500' }}"></i>
         <span>Users</span>
       </a>
+      <a href="{{ route('admin.rsvps.index') }}"
+   class="flex items-center gap-2 px-2 py-1 rounded {{ request()->routeIs('admin.rsvps.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
+  <i class="fa-solid fa-clipboard-check {{ request()->routeIs('admin.rsvps.*') ? 'text-red-600' : 'text-gray-500' }}"></i>
+  <span>RSVPs</span>
+</a>
     @endcan
   </nav>
 
