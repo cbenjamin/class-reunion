@@ -2,56 +2,123 @@
   {{-- HERO (parallax) --}}
 <section class="relative h-[70vh] min-h-[520px] overflow-hidden">
   <div class="absolute inset-0" x-ref="hero" :style="heroStyle">
-    <!-- Animated gradient + slow pan -->
     <div class="animated-hero-bg animate-gradient-pan"></div>
-
-    <!-- Soft floating red glows (you already have these styles) -->
     <div class="hero-blob b1" aria-hidden="true"></div>
     <div class="hero-blob b2" aria-hidden="true"></div>
-
-    <!-- Dark top overlay for text contrast -->
-    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
   </div>
 
   <div class="relative z-10 h-full">
     <div class="mx-auto max-w-6xl h-full px-5 flex items-center">
-      <div class="text-white">
-        <p class="text-xs uppercase tracking-widest/relaxed opacity-90">Class Reunion</p>
-        <h1 class="mt-1 text-4xl md:text-6xl font-bold leading-tight">{{ $event['name'] ?? config('app.name') }}</h1>
-        <p class="mt-3 text-lg md:text-xl opacity-90">
-          {{ $event['date'] ?? 'TBD' }} • {{ $event['time'] ?? '' }}
-        </p>
-        @if(($event['venue'] ?? null) || ($event['address'] ?? null))
-          <p class="mt-1 text-sm md:text-base opacity-90">
-            {{ $event['venue'] ?? '' }} @if(($event['venue'] ?? null) && ($event['address'] ?? null)) • @endif {{ $event['address'] ?? '' }}
-          </p>
-        @endif
 
-        <div class="mt-6 flex flex-wrap gap-3">
-          @auth
-            <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
-              Go to Dashboard
-            </a>
+      {{-- Content wrapper (adds subtle entrance) --}}
+      <div x-data="{ show:false }" x-init="requestAnimationFrame(()=>show=true)"
+           :class="show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'"
+           class="transition duration-700 ease-out">
 
+        {{-- Glass “hero card” --}}
+        <div class="w-full md:max-w-4xl lg:max-w-5xl rounded-3xl bg-white/10 backdrop-blur-md ring-1 ring-white/15 shadow-2xl p-6 sm:p-8">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[11px] uppercase tracking-widest/relaxed text-white/80">
+              Class Reunion
+            </span>
+
+            {{-- Optional countdown chip --}}
             @php
-              $rsvpEnabled = (bool) (\App\Models\EventSetting::query()->value('rsvp_enabled'));
+              // Prefer using your real date field if you have it; this is safe fallback.
+              $dateRaw = \App\Models\EventSetting::query()->value('event_date');
+              $daysLeft = null;
+              if ($dateRaw) {
+                try {
+                  $daysLeft = now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($dateRaw)->startOfDay(), false);
+                } catch (\Throwable $e) {}
+              }
             @endphp
 
-            @if($rsvpEnabled)
-              <a href="{{ route('rsvp.form') }}"
-                 class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
-                <span>RSVP</span>
-              </a>
+            @if(!is_null($daysLeft))
+              <span class="ml-auto inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs text-white ring-1 ring-white/15">
+                @if($daysLeft > 0)
+                  {{ $daysLeft }} days to go
+                @elseif($daysLeft === 0)
+                  Today 🎉
+                @else
+                  Event ended
+                @endif
+              </span>
             @endif
-          @else
-            <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
-              Request Invitation
-            </a>
-            <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium hover:bg-white/10">
-              Log In
-            </a>
+          </div>
+
+          <h1 class="mt-2 text-4xl md:text-6xl font-bold leading-tight text-white">
+            {{ $event['name'] ?? config('app.name') }}
+          </h1>
+
+          <p class="mt-3 text-lg md:text-xl text-white/85">
+            {{ $event['date'] ?? 'TBD' }} • {{ $event['time'] ?? '' }}
+          </p>
+
+          @if(($event['venue'] ?? null) || ($event['address'] ?? null))
+            <p class="mt-1 text-sm md:text-base text-white/75">
+              {{ $event['venue'] ?? '' }}
+              @if(($event['venue'] ?? null) && ($event['address'] ?? null)) • @endif
+              {{ $event['address'] ?? '' }}
+            </p>
+          @endif
+
+          {{-- Buttons --}}
+          <div class="mt-6 flex flex-wrap gap-3">
+            @auth
+              <a href="{{ route('dashboard') }}"
+                 class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
+                Go to Dashboard
+              </a>
+
+              @php
+                $rsvpEnabled = (bool) (\App\Models\EventSetting::query()->value('rsvp_enabled'));
+              @endphp
+
+              @if($rsvpEnabled)
+                <a href="{{ route('rsvp.form') }}"
+                   class="inline-flex items-center rounded-lg bg-red-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-red-700">
+                  RSVP
+                </a>
+              @endif
+            @else
+              <a href="{{ route('invite.create') }}"
+                 class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
+                Request Invitation
+              </a>
+              <a href="{{ route('login') }}"
+                 class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium hover:bg-white/10">
+                Log In
+              </a>
+            @endauth
+          </div>
+
+          {{-- Quick jump links (makes the hero feel interactive) --}}
+          @auth
+            <div class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/75">
+              <a href="#photos" class="hover:text-white underline underline-offset-4 decoration-white/30">Photos</a>
+              <a href="#memory-book" class="hover:text-white underline underline-offset-4 decoration-white/30">Memory Book</a>
+              <a href="#where-now" class="hover:text-white underline underline-offset-4 decoration-white/30">Where are we now?</a>
+            </div>
           @endauth
+
+          {{-- Optional: mini stat pills (if you already have $stats on this page) --}}
+          @isset($stats)
+            <div class="mt-6 flex flex-wrap gap-2">
+              <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 ring-1 ring-white/10">
+                {{ number_format($stats['classmates'] ?? 0) }} classmates
+              </span>
+              <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 ring-1 ring-white/10">
+                {{ number_format($stats['photos'] ?? 0) }} photos
+              </span>
+              <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 ring-1 ring-white/10">
+                {{ number_format($stats['stories'] ?? 0) }} stories
+              </span>
+            </div>
+          @endisset
         </div>
+
       </div>
     </div>
   </div>
