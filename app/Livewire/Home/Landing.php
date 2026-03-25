@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Home;
 
-use App\Actions\ToggleReaction;
 use App\Models\Photo;
 use App\Models\PhotoReaction;
 use App\Models\User;
@@ -147,18 +146,13 @@ class Landing extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-<<<<<<< Updated upstream
         $current = $this->myReactions[$photoId] ?? null;
 
         if ($current === $type) {
             PhotoReaction::where('photo_id', $photoId)
                 ->where('user_id', Auth::id())
                 ->delete();
-=======
-        $result = (new ToggleReaction)->handle($photoId, Auth::id(), $type);
->>>>>>> Stashed changes
 
-        if ($result['toggled_off']) {
             if (isset($this->reactionCounts[$photoId][$type])) {
                 $this->reactionCounts[$photoId][$type] = max(0, $this->reactionCounts[$photoId][$type] - 1);
                 if ($this->reactionCounts[$photoId][$type] === 0) {
@@ -166,7 +160,6 @@ class Landing extends Component
                 }
             }
             unset($this->myReactions[$photoId]);
-<<<<<<< Updated upstream
             return;
         }
 
@@ -181,32 +174,23 @@ class Landing extends Component
                     if ($this->reactionCounts[$photoId][$current] === 0) {
                         unset($this->reactionCounts[$photoId][$current]);
                     }
-=======
-        } else {
-            $previous = $result['previous'];
-            if ($previous && isset($this->reactionCounts[$photoId][$previous])) {
-                $this->reactionCounts[$photoId][$previous] = max(0, $this->reactionCounts[$photoId][$previous] - 1);
-                if ($this->reactionCounts[$photoId][$previous] === 0) {
-                    unset($this->reactionCounts[$photoId][$previous]);
->>>>>>> Stashed changes
                 }
+                $existing->update(['type' => $type]);
+            } else {
+                PhotoReaction::create([
+                    'photo_id' => $photoId,
+                    'user_id'  => Auth::id(),
+                    'type'     => $type,
+                ]);
             }
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
             $this->reactionCounts[$photoId][$type] = ($this->reactionCounts[$photoId][$type] ?? 0) + 1;
             $this->myReactions[$photoId] = $type;
-        }
+        });
     }
 
     public function render()
     {
         return view('livewire.home.landing');
     }
-<<<<<<< Updated upstream
-
 }
-=======
-}
->>>>>>> Stashed changes

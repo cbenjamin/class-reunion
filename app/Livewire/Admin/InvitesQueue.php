@@ -19,23 +19,6 @@ class InvitesQueue extends Component
 
     public function approve(int $id): void
     {
-<<<<<<< Updated upstream
-=======
-        abort_unless(Gate::allows('admin'), 403);
-        $this->refreshLists();
-    }
-
-    public function refreshLists(): void
-    {
-        $this->pending = InvitationRequest::where('status','pending')->latest()->get();
-        $this->approved = InvitationRequest::where('status','approved')->latest()->get();
-        $this->denied = InvitationRequest::where('status','denied')->latest()->get();
-    }
-
-    public function approve(int $id)
-    {
-        abort_unless(Gate::allows('admin'), 403);
->>>>>>> Stashed changes
         $req = InvitationRequest::findOrFail($id);
 
         // Create/fetch user
@@ -55,15 +38,10 @@ class InvitesQueue extends Component
 
         // Update invite + notify
         $req->update([
-<<<<<<< Updated upstream
             'status'         => 'approved',
             'approval_token' => Str::random(64),
             'approved_by'    => auth()->id(),
             'approved_at'    => now(),
-=======
-            'status' => 'approved',
-            'approval_token' => Str::random(64),
->>>>>>> Stashed changes
         ]);
 
         try {
@@ -87,7 +65,6 @@ class InvitesQueue extends Component
 
     public function reject(int $id): void
     {
-<<<<<<< Updated upstream
         InvitationRequest::findOrFail($id)->update([
             'status'      => 'rejected',
             'approved_by' => auth()->id(),
@@ -95,12 +72,6 @@ class InvitesQueue extends Component
 
         session()->flash('status', 'Invitation rejected.');
         $this->resetPage();
-=======
-        abort_unless(Gate::allows('admin'), 403);
-        InvitationRequest::findOrFail($id)->update(['status' => 'denied']);
-        $this->refreshLists();
-        session()->flash('status','Request denied.');
->>>>>>> Stashed changes
     }
 
     public function render()
