@@ -59,7 +59,11 @@ class PhotosModeration extends Component
                 Storage::disk($photo->disk)->delete($photo->path);
             }
         } catch (\Throwable $e) {
+<<<<<<< Updated upstream
             Log::error('Admin photo file delete failed', ['photo_id' => $photo->id, 'error' => $e->getMessage()]);
+=======
+            Log::error('Admin photo file delete failed', ['photo_id' => $photo->id, 'path' => $photo->path, 'error' => $e->getMessage()]);
+>>>>>>> Stashed changes
         }
 
         $photo->delete();
