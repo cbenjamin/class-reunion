@@ -2,6 +2,8 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Photo;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -12,7 +14,11 @@ class PhotosModeration extends Component
     public $pending = [];
     public $approved = [];
 
-    public function mount() { $this->refreshLists(); }
+    public function mount()
+    {
+        abort_unless(Gate::allows('admin'), 403);
+        $this->refreshLists();
+    }
 
     public function refreshLists(): void
     {
@@ -53,7 +59,7 @@ class PhotosModeration extends Component
                 Storage::disk($photo->disk)->delete($photo->path);
             }
         } catch (\Throwable $e) {
-            // optional log
+            Log::error('Admin photo file delete failed', ['photo_id' => $photo->id, 'error' => $e->getMessage()]);
         }
 
         $photo->delete();

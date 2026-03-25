@@ -39,7 +39,7 @@ class InvitesQueue extends Component
         // Update invite + notify
         $req->update([
             'status'         => 'approved',
-            'approval_token' => Str::uuid(),
+            'approval_token' => Str::random(64),
             'approved_by'    => auth()->id(),
             'approved_at'    => now(),
         ]);

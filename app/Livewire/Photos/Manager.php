@@ -59,7 +59,7 @@ class Manager extends Component
                 Storage::disk($photo->disk)->delete($photo->path);
             }
         } catch (\Throwable $e) {
-            // log if you want: \Log::warning('Photo file delete failed', [...]);
+            \Log::warning('Photo file delete failed', ['photo_id' => $photo->id, 'error' => $e->getMessage()]);
         }
 
         $photo->delete();

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Reactions;
 
-use App\Models\Photo;
+use App\Actions\ToggleReaction;
 use App\Models\PhotoReaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +27,6 @@ class Bar extends Component
 
     public ?string $mine = null;
 
-    // Accept a photo ID (from parent)
     public function mount(int $photo): void
     {
         $this->photoId = $photo;
@@ -54,42 +53,23 @@ class Bar extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        // toggle off if clicking the same reaction
-        if ($this->mine === $type) {
-            PhotoReaction::where('photo_id', $this->photoId)
-                ->where('user_id', Auth::id())
-                ->delete();
+        $result = (new ToggleReaction)->handle($this->photoId, Auth::id(), $type);
 
+        if ($result['toggled_off']) {
             if (isset($this->counts[$type])) {
                 $this->counts[$type] = max(0, $this->counts[$type] - 1);
                 if ($this->counts[$type] === 0) unset($this->counts[$type]);
             }
             $this->mine = null;
-            return;
-        }
-
-        DB::transaction(function () use ($type) {
-            $existing = PhotoReaction::where('photo_id', $this->photoId)
-                ->where('user_id', Auth::id())
-                ->first();
-
-            if ($existing) {
-                if (isset($this->counts[$existing->type])) {
-                    $this->counts[$existing->type] = max(0, $this->counts[$existing->type] - 1);
-                    if ($this->counts[$existing->type] === 0) unset($this->counts[$existing->type]);
-                }
-                $existing->update(['type' => $type]);
-            } else {
-                PhotoReaction::create([
-                    'photo_id' => $this->photoId,
-                    'user_id'  => Auth::id(),
-                    'type'     => $type,
-                ]);
+        } else {
+            $previous = $result['previous'];
+            if ($previous && isset($this->counts[$previous])) {
+                $this->counts[$previous] = max(0, $this->counts[$previous] - 1);
+                if ($this->counts[$previous] === 0) unset($this->counts[$previous]);
             }
-
             $this->counts[$type] = ($this->counts[$type] ?? 0) + 1;
             $this->mine = $type;
-        });
+        }
     }
 
     public function render()

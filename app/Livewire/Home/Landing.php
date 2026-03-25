@@ -194,6 +194,4 @@ class Landing extends Component
         return view('livewire.home.landing');
     }
 
-    public int $clicks = 0;
-    public function ping() { $this->clicks++; }
 }

@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Story;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
@@ -14,6 +15,7 @@ class StoriesModeration extends Component
 
     public function mount()
     {
+        abort_unless(Gate::allows('admin'), 403);
         $this->refreshLists();
     }
 
