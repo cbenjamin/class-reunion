@@ -28,7 +28,7 @@
 
         {{-- Glass “hero card” --}}
         <div :class="inView ? 'animate-hero-float' : ''" class="w-full md:max-w-4xl lg:max-w-5xl rounded-3xl bg-white/10 backdrop-blur-md ring-1 ring-white/15 shadow-2xl p-6 sm:p-8">
-          <div class=" :class="inView ? 'hero-reveal is-in hero-delay-1' : 'hero-reveal'" flex flex-wrap items-center gap-2">
+          <div :class="inView ? 'hero-reveal is-in hero-delay-1' : 'hero-reveal'" class="flex flex-wrap items-center gap-2">
             <span class="text-[11px] uppercase tracking-widest/relaxed text-white/80">
               Class Reunion
             </span>

@@ -21,14 +21,6 @@
         if (el.dataset.inited === '1') return;
         el.dataset.inited = '1';
 
-        // Ensure marker icon assets resolve
-        const iconBase = 'https://unpkg.com/leaflet@1.9.4/dist/images/';
-        L.Icon.Default.mergeOptions({
-          iconRetinaUrl: iconBase + 'marker-icon-2x.png',
-          iconUrl:       iconBase + 'marker-icon.png',
-          shadowUrl:     iconBase + 'marker-shadow.png',
-        });
-
         const map = L.map(el, { worldCopyJump: true });
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 18,
@@ -40,7 +32,7 @@
           spiderfyOnMaxZoom: true
         });
 
-        const data = @json($mapMarkers ?? []);
+        const data = window.__whereNowMarkers || [];
         const bounds = [];
 
         (data || []).forEach(p => {
@@ -66,8 +58,6 @@
         // Make sure it sizes correctly if the section animates in
         requestAnimationFrame(() => map.invalidateSize());
 
-        // Optional: quick debug to confirm data on prod
-        // console.debug('Home map markers:', data.length, data);
       }
 
       // Start immediately if DOM is already parsed, otherwise wait
@@ -96,8 +86,11 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-3">
+                {{-- Inline data — always fresh, not affected by @once --}}
+                <script>window.__whereNowMarkers = @json($markers ?? []);</script>
+
                 <div class="rounded-xl overflow-hidden ring-1 ring-black/5" wire:ignore>
-                    <div id="where-map" style="height: 520px;"></div>
+                    <div id="home-where-map" style="height: 520px;"></div>
                 </div>
             </div>
 
