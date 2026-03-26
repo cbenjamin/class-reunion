@@ -23,7 +23,7 @@ class UsersIndex extends Component
     {
         $u = User::findOrFail($id);
         $u->is_approved = true;
-        // optional: $u->denied_at = null;
+        $u->approved_at = now();
         $u->save();
 
         session()->flash('status', 'User approved.');

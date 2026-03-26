@@ -33,6 +33,7 @@ class InvitesQueue extends Component
         // Mark user approved
         if (! $user->is_approved) {
             $user->is_approved = true;
+            $user->approved_at = now();
             $user->save();
         }
 

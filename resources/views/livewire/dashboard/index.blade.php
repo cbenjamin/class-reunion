@@ -59,4 +59,6 @@
       </ul>
     </div>
   </div>
+
+  <livewire:dashboard.activity-feed />
 </div>

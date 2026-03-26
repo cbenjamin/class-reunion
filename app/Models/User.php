@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_approved',
+        'approved_at',
         'city', 'state', 'lat', 'lng', 'share_location',
     ];
 
@@ -44,11 +46,14 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'approved_at'       => 'datetime',
+            'password'          => 'hashed',
         ];
     }
 
 public function photos() { return $this->hasMany(\App\Models\Photo::class); }
+
+    public function thenNow() { return $this->hasOne(\App\Models\ThenNow::class); }
 
     /**
      * Get the user's initials
