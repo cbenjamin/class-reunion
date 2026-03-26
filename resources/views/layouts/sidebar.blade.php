@@ -55,6 +55,13 @@
       <span>Memorial Wall</span>
     </a>
 
+    <a href="{{ route('then-now.wall') }}"
+       class="flex items-center gap-2 px-2 py-1 rounded {{ request()->routeIs('then-now.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}"
+       @if(request()->routeIs('then-now.*')) aria-current="page" @endif>
+      <i class="fa-solid fa-clock-rotate-left {{ request()->routeIs('then-now.*') ? 'text-red-600' : 'text-gray-500' }}"></i>
+      <span>Then &amp; Now</span>
+    </a>
+
     @can('admin')
       <div class="mt-3 pt-3 border-t text-xs uppercase tracking-wide text-gray-500">Admin</div>
 
@@ -91,6 +98,13 @@
          @if(request()->routeIs('admin.photos.*')) aria-current="page" @endif>
         <i class="fa-solid fa-images {{ request()->routeIs('admin.photos.*') ? 'text-red-600' : 'text-gray-500' }}"></i>
         <span>Photos</span>
+      </a>
+
+      <a href="{{ route('admin.then-now.index') }}"
+         class="flex items-center gap-2 px-2 py-1 rounded {{ request()->routeIs('admin.then-now.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}"
+         @if(request()->routeIs('admin.then-now.*')) aria-current="page" @endif>
+        <i class="fa-solid fa-clock-rotate-left {{ request()->routeIs('admin.then-now.*') ? 'text-red-600' : 'text-gray-500' }}"></i>
+        <span>Then &amp; Now</span>
       </a>
 
       <a href="{{ route('admin.stories.index') }}"

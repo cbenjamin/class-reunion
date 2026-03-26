@@ -28,6 +28,9 @@ use App\Livewire\Settings\Location as SettingsLocation;
 use App\Livewire\Map\WhereNow;
 use App\Livewire\Rsvp\Form as RsvpForm;
 use App\Livewire\Admin\RsvpsIndex;
+use App\Livewire\ThenNow\Submit as ThenNowSubmit;
+use App\Livewire\ThenNow\Wall as ThenNowWall;
+use App\Livewire\Admin\ThenNowModeration;
 
 // Location settings (approved users)
 Route::middleware(['auth','approved'])->group(function () {
@@ -37,6 +40,8 @@ Route::middleware(['auth','approved'])->group(function () {
     Route::get('/ideas/new', IdeasSubmit::class)->name('ideas.new');
     Route::get('/memorials', MemorialWall::class)->name('memorials.wall');
     Route::get('/rsvp', RsvpForm::class)->name('rsvp.form');
+    Route::get('/then-now', ThenNowWall::class)->name('then-now.wall');
+    Route::get('/then-now/submit', ThenNowSubmit::class)->name('then-now.submit');
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
     Route::get('/photos', PhotosManager::class)->name('photos.index');
     Route::post('/photos/{photo}/react.json', [PhotoReactionController::class, 'storeJson'])->name('photos.react.json')->middleware('auth');
@@ -53,6 +58,7 @@ Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('/admin/photos', PhotosModeration::class)->name('admin.photos.index');
     Route::get('/admin/stories', AdminStories::class)->name('admin.stories.index');
     Route::get('/admin/rsvps', RsvpsIndex::class)->name('admin.rsvps.index');
+    Route::get('/admin/then-now', ThenNowModeration::class)->name('admin.then-now.index');
 });
 
 
