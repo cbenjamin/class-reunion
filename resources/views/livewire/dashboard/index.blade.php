@@ -36,8 +36,9 @@
       </dl>
 
       <div class="mt-4 flex gap-3">
-        <a href="{{ $mapUrl }}" target="_blank" rel="noopener" class="btn btn-primary px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
-          Get Directions
+        <a href="{{ $mapUrl }}" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-700 text-white text-sm font-medium hover:bg-red-800 transition">
+          <i class="fa-solid fa-diamond-turn-right text-xs"></i> Get Directions
         </a>
         {{-- Optional: add-to-calendar later --}}
       </div>
@@ -50,7 +51,7 @@
       </p>
       <hr class="my-4">
       <h3 class="font-medium mb-2">Quick Links</h3>
-      <ul class="list-disc list-inside text-sm text-indigo-700 space-y-1">
+      <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
         <li><a class="hover:underline" href="{{ route('photos.index') }}">Upload Photos</a></li>
         @can('admin')
           <li><a class="hover:underline" href="{{ route('admin.invites.index') }}">Review Invitation Requests</a></li>
