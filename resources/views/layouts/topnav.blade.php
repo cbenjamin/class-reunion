@@ -7,7 +7,7 @@
   $isTransparent = $variant === 'transparent';
 @endphp
 
-<nav class="{{ $isTransparent ? 'bg-transparent absolute inset-x-0 top-0 z-50' : 'bg-slate-900 sticky top-0 z-50' }}">
+<nav class="{{ $isTransparent ? 'bg-transparent absolute inset-x-0 top-0 z-50' : 'bg-zinc-900 sticky top-0 z-50' }}">
   <div class="mx-auto max-w-7xl px-4">
     <div class="h-14 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -28,19 +28,19 @@
 
       <div class="flex items-center gap-3">
         @guest
-          <a href="{{ route('invite.create') }}" class="text-sm text-slate-300 hover:text-white transition">Request Invite</a>
-          <a href="{{ route('login') }}" class="text-sm text-slate-300 hover:text-white transition">Log in</a>
+          <a href="{{ route('invite.create') }}" class="text-sm text-zinc-300 hover:text-white transition">Request Invite</a>
+          <a href="{{ route('login') }}" class="text-sm text-zinc-300 hover:text-white transition">Log in</a>
         @endguest
 
         @auth
           {{-- Compact user menu --}}
           <div x-data="{open:false}" class="relative">
-            <button @click="open=!open" class="flex items-center gap-1.5 text-sm text-slate-300 hover:text-white transition">
+            <button @click="open=!open" class="flex items-center gap-1.5 text-sm text-zinc-300 hover:text-white transition">
               {{ Str::of(auth()->user()->name)->words(2, '') }}
-              <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 transition-transform duration-150" :class="open ? 'rotate-180' : ''"></i>
+              <i class="fa-solid fa-chevron-down text-[10px] text-zinc-500 transition-transform duration-150" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" @click.outside="open=false" x-transition
-                 class="absolute right-0 mt-2 w-44 bg-slate-800 border border-white/10 rounded-lg shadow-xl">
+                 class="absolute right-0 mt-2 w-44 bg-zinc-800 border border-white/10 rounded-lg shadow-xl">
               <a href="{{ route('profile.edit') }}" class="block px-3 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white rounded-t-lg">Profile</a>
               <form method="POST" action="{{ route('logout') }}">
                 @csrf

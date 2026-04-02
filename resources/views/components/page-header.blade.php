@@ -3,7 +3,7 @@
   'description' => null,
 ])
 
-<div class="bg-slate-800 border-b border-white/5">
+<div class="bg-zinc-800 border-b border-white/5">
   <div class="mx-auto max-w-6xl px-5 py-5 flex items-center justify-between gap-4">
     <div>
       <h1 class="text-lg font-semibold text-white">{{ $title }}</h1>
