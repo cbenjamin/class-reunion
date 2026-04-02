@@ -19,14 +19,13 @@ class InvitationApproved extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $url = route('invite.set-password', $this->request->approval_token);
+        $url = route('login');
 
         return (new MailMessage)
-            ->subject('You’re invited — Finish your reunion signup')
-            ->greeting('Hi '.$this->request->full_name.'!')
-            ->line('Your request has been approved. Set your password to finish signup.')
-            ->action('Set Password', $url)
-            ->line('If the button doesn’t work, paste this into your browser:')
-            ->line($url);
+            ->subject('You\'re in — Your reunion access has been approved!')
+            ->greeting('Hi ' . $this->request->full_name . '!')
+            ->line('Great news — your request has been approved. You can now log in with the email and password you created.')
+            ->action('Log In Now', $url)
+            ->line('If you have any trouble logging in, use the "Forgot your password?" link on the login page.');
     }
 }

@@ -5,9 +5,6 @@ namespace App\Livewire\Admin;
 use App\Models\InvitationRequest;
 use App\Models\User;
 use App\Notifications\InvitationApproved;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -21,55 +18,41 @@ class InvitesQueue extends Component
     {
         $req = InvitationRequest::findOrFail($id);
 
-        // Create/fetch user
-        $user = User::firstOrCreate(
-            ['email' => $req->email],
-            [
-                'name'     => $req->name ?? $req->full_name ?? Str::before($req->email, '@'),
-                'password' => Hash::make(Str::random(40)),
-            ]
-        );
+        // User was created at request time with is_approved=false
+        $user = User::where('email', $req->email)->firstOrFail();
 
-        // Mark user approved
         if (! $user->is_approved) {
             $user->is_approved = true;
             $user->approved_at = now();
             $user->save();
         }
 
-        // Update invite + notify
         $req->update([
-            'status'         => 'approved',
-            'approval_token' => Str::random(64),
-            'approved_by'    => auth()->id(),
-            'approved_at'    => now(),
+            'status'      => 'approved',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
         ]);
 
         try {
-            $req->notify(new InvitationApproved($req));
+            $user->notify(new InvitationApproved($req));
         } catch (\Throwable $e) {
             \Log::warning('InvitationApproved notify failed', ['error' => $e->getMessage()]);
         }
 
-        // Send password setup link
-        $status = Password::sendResetLink(['email' => $user->email]);
-
-        session()->flash(
-            'status',
-            $status === Password::RESET_LINK_SENT
-                ? 'Approved. Password setup email sent.'
-                : 'Approved. Password email issue — check logs.'
-        );
-
+        session()->flash('status', 'Approved. User can now log in.');
         $this->resetPage();
     }
 
     public function reject(int $id): void
     {
-        InvitationRequest::findOrFail($id)->update([
+        $req = InvitationRequest::findOrFail($id);
+
+        $req->update([
             'status'      => 'rejected',
             'approved_by' => auth()->id(),
         ]);
+
+        // User remains with is_approved=false — they cannot log in
 
         session()->flash('status', 'Invitation rejected.');
         $this->resetPage();
