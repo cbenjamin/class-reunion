@@ -1,14 +1,12 @@
-<div class="max-w-6xl mx-auto px-4 py-10">
-
-    <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-2xl font-bold">Then &amp; Now</h1>
-            <p class="text-sm text-gray-500 mt-1">See how your classmates have changed over the years.</p>
-        </div>
+<x-page-header title="Then & Now" description="See how your classmates have changed over the years.">
+    <x-slot:actions>
         <a href="{{ route('then-now.submit') }}" class="btn btn-primary">
-            <i class="fa-solid fa-upload mr-1"></i> Add Mine
+            <i class="fa-solid fa-upload mr-1.5 text-xs"></i> Add Mine
         </a>
-    </div>
+    </x-slot:actions>
+</x-page-header>
+
+<div class="max-w-6xl mx-auto px-4 py-10">
 
     @if($pairs->isEmpty())
         <div class="text-center py-20 text-gray-400">

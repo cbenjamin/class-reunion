@@ -75,14 +75,13 @@
 @endpush
     @endonce
 
-    <div class="mx-auto max-w-6xl px-5 py-8">
-        <div class="flex items-center justify-between gap-4 mb-4">
-            <div>
-                <h1 class="text-2xl font-semibold">Where are we now?</h1>
-                <p class="text-sm text-gray-600">Approximate locations of approved classmates (city-level only).</p>
-            </div>
+    <x-page-header title="Where are we now?" description="Approximate locations of approved classmates (city-level only).">
+        <x-slot:actions>
             <a href="{{ route('settings.location') }}" class="btn btn-secondary">Update my location</a>
-        </div>
+        </x-slot:actions>
+    </x-page-header>
+
+    <div class="mx-auto max-w-6xl px-5 py-8">
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-3">

@@ -1,12 +1,8 @@
+<x-page-header title="RSVP" description="Let us know if you can make it to the reunion." />
+
 <div class="mx-auto max-w-3xl px-5 py-10">
   <div class="bubble">
     <div class="bubble-inner">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <h1 class="bubble-title">RSVP</h1>
-          <p class="bubble-sub">Let us know if you can make it.</p>
-        </div>
-      </div>
 
       @if(!$rsvpEnabled)
         <div class="mt-6 rounded-xl bg-gray-50 ring-1 ring-black/5 p-4 text-sm text-gray-700">
@@ -67,7 +63,7 @@
           </div>
 
           <div class="flex items-center gap-3">
-            <button class="btn btn-danger" type="submit">Save RSVP</button>
+            <button class="btn btn-primary" type="submit">Save RSVP</button>
             <span wire:loading class="text-sm text-gray-500">Saving…</span>
           </div>
         </form>
