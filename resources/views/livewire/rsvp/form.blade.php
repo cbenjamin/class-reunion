@@ -1,3 +1,4 @@
+<div>
 <x-page-header title="RSVP" description="Let us know if you can make it to the reunion." />
 
 <div class="mx-auto max-w-3xl px-5 py-10">
@@ -70,4 +71,5 @@
       @endif
     </div>
   </div>
+</div>
 </div>

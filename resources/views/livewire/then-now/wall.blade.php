@@ -1,3 +1,4 @@
+<div>
 <x-page-header title="Then & Now" description="See how your classmates have changed over the years.">
     <x-slot:actions>
         <a href="{{ route('then-now.submit') }}" class="btn btn-primary">
@@ -50,4 +51,5 @@
             <div class="mt-8">{{ $pairs->links() }}</div>
         @endif
     @endif
+</div>
 </div>

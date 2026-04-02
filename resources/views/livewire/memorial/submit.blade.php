@@ -1,3 +1,4 @@
+<div>
 <x-page-header title="Submit a Memorial" description="Share a tribute for a departed classmate. Submissions are reviewed before appearing on the memorial wall." />
 
 <div class="max-w-3xl mx-auto p-6">
@@ -70,4 +71,5 @@
       </button>
     </div>
   </form>
+</div>
 </div>

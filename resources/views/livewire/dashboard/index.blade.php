@@ -1,3 +1,4 @@
+<div>
 <x-page-header title="Event Details" description="Everything you need to know about the reunion." />
 
 <div class="max-w-5xl mx-auto px-4 py-10">
@@ -59,4 +60,5 @@
   </div>
 
   <livewire:dashboard.activity-feed />
+</div>
 </div>

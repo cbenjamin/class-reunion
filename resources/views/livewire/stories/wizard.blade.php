@@ -1,3 +1,4 @@
+<div>
 <x-page-header title=”Share a Memory” description='A few quick prompts — you can choose to appear as “Anonymous”.' />
 
 <div class=”max-w-3xl mx-auto px-4 py-10” x-data=”storyWizard()”>
@@ -88,4 +89,5 @@
       </button>
     </div>
   </div>
+</div>
 </div>

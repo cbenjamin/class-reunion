@@ -1,3 +1,4 @@
+<div>
 <x-page-header title="In Memoriam" description="With love and remembrance of our departed classmates.">
   <x-slot:actions>
     <input type="text" wire:model.debounce.300ms="q"
@@ -63,4 +64,5 @@
   <div class="mt-6">
     {{ $memorials->links() }}
   </div>
+</div>
 </div>
