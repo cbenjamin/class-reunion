@@ -1,3 +1,4 @@
+<div>
 <x-page-header title="Submit Then & Now" description="Upload a photo from back in the day alongside one from today. One submission per classmate." />
 
 <div class="max-w-2xl mx-auto px-4 py-10">
@@ -116,4 +117,5 @@
             <span wire:loading wire:target="save">Submitting…</span>
         </button>
     </form>
+</div>
 </div>

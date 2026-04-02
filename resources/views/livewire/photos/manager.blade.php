@@ -1,4 +1,5 @@
 
+<div>
 <x-page-header title="My Photos" description="Upload your memories — approved photos appear on the homepage and at the reunion." />
 
 <div class="max-w-4xl mx-auto px-4 py-10 space-y-8">
@@ -112,4 +113,5 @@
       </div>
     @endif
   </div>
+</div>
 </div>
