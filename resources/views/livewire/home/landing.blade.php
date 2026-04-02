@@ -224,7 +224,7 @@
         <div class="bubble-inner">
           <div class="flex items-center justify-between mb-6">
             <h2 class="bubble-title">Memory Book</h2>
-            <a href="{{ route('stories.new') }}" class="btn btn-secondary">Share Your Story</a>
+            <a href="{{ route('stories.new') }}" class="inline-flex items-center rounded-lg border border-gray-300 bg-white text-gray-800 px-4 py-2 text-sm font-medium hover:bg-gray-50 transition">Share Your Story</a>
           </div>
 
           <livewire:stories.wall :limit="18" />
