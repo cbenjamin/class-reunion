@@ -62,6 +62,16 @@
       <span>Then &amp; Now</span>
     </a>
 
+    @php $rsvpEnabled = (bool) \App\Models\EventSetting::query()->value('rsvp_enabled'); @endphp
+    @if($rsvpEnabled)
+      <a href="{{ route('rsvp.form') }}"
+         class="flex items-center gap-2 px-2 py-1 rounded {{ request()->routeIs('rsvp.form') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}"
+         @if(request()->routeIs('rsvp.form')) aria-current="page" @endif>
+        <i class="fa-solid fa-circle-check {{ request()->routeIs('rsvp.form') ? 'text-red-600' : 'text-gray-500' }}"></i>
+        <span>RSVP</span>
+      </a>
+    @endif
+
     @can('admin')
       <div class="mt-3 pt-3 border-t text-xs uppercase tracking-wide text-gray-500">Admin</div>
 
@@ -121,10 +131,11 @@
         <span>Users</span>
       </a>
       <a href="{{ route('admin.rsvps.index') }}"
-   class="flex items-center gap-2 px-2 py-1 rounded {{ request()->routeIs('admin.rsvps.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-  <i class="fa-solid fa-clipboard-check {{ request()->routeIs('admin.rsvps.*') ? 'text-red-600' : 'text-gray-500' }}"></i>
-  <span>RSVPs</span>
-</a>
+         class="flex items-center gap-2 px-2 py-1 rounded {{ request()->routeIs('admin.rsvps.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}"
+         @if(request()->routeIs('admin.rsvps.*')) aria-current="page" @endif>
+        <i class="fa-solid fa-clipboard-check {{ request()->routeIs('admin.rsvps.*') ? 'text-red-600' : 'text-gray-500' }}"></i>
+        <span>RSVPs</span>
+      </a>
     @endcan
   </nav>
 

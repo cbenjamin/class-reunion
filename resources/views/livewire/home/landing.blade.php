@@ -95,14 +95,10 @@
                 </a>
               @endif
             @else
-              <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium
-       transition transform hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0"
-                 class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium hover:bg-white">
+              <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-white/95 text-gray-900 px-5 py-2.5 text-sm font-medium transition transform hover:-translate-y-0.5 hover:bg-white active:translate-y-0">
                 Request Invitation
               </a>
-              <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium
-       transition transform hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0"
-                 class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium hover:bg-white/10">
+              <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-white/60 text-white px-5 py-2.5 text-sm font-medium transition transform hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0">
                 Log In
               </a>
             @endauth
@@ -117,20 +113,21 @@
             </div>
           @endauth
 
-          {{-- Optional: mini stat pills (if you already have $stats on this page) --}}
-          @isset($stats)
-            <div class="mt-6 flex flex-wrap gap-2">
-              <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 ring-1 ring-white/10">
-                {{ number_format($stats['classmates'] ?? 0) }} classmates
-              </span>
-              <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 ring-1 ring-white/10">
-                {{ number_format($stats['photos'] ?? 0) }} photos
-              </span>
-              <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 ring-1 ring-white/10">
-                {{ number_format($stats['stories'] ?? 0) }} stories
-              </span>
-            </div>
-          @endisset
+          {{-- Social proof --}}
+          @guest
+            @php
+              $rsvpCount = \App\Models\Rsvp::where('status', 'yes')->count();
+            @endphp
+            @if($rsvpCount > 0)
+              <p class="mt-5 text-sm text-white/70">
+                <span class="font-semibold text-white">{{ number_format($rsvpCount) }} {{ Str::plural('classmate', $rsvpCount) }}</span> have already RSVP'd
+              </p>
+            @elseif(($stats['classmates'] ?? 0) > 0)
+              <p class="mt-5 text-sm text-white/70">
+                <span class="font-semibold text-white">{{ number_format($stats['classmates']) }}</span> classmates are already on board
+              </p>
+            @endif
+          @endguest
         </div>
 
       </div>
@@ -215,7 +212,7 @@
           </div>
 
           <div class="mt-6 sm:hidden text-center">
-            <a href="{{ route('photos.index') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700">
+            <a href="{{ route('photos.index') }}" class="inline-flex items-center rounded-lg bg-red-700 text-white px-4 py-2 text-sm font-medium hover:bg-red-800">
               Upload Your Photos
             </a>
           </div>
@@ -297,6 +294,25 @@
       </div>
     </section>
 
+    {{-- Photo teaser --}}
+    @if($photos->isNotEmpty())
+      <section class="mx-auto max-w-6xl px-5 py-10">
+        <div class="flex items-end justify-between mb-4">
+          <h2 class="text-xl font-semibold">A peek inside</h2>
+          <a href="{{ route('invite.create') }}" class="text-sm text-red-700 hover:underline font-medium">Request an invite to see more →</a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          @foreach($photos->take(6) as $p)
+            @php $url = Storage::disk($p->disk)->url($p->path); @endphp
+            <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-100">
+              <img src="{{ $url }}" alt="" class="w-full h-full object-cover" loading="lazy">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            </div>
+          @endforeach
+        </div>
+      </section>
+    @endif
+
     {{-- How it works + Stats --}}
     <section class="bg-white/60">
       <div class="mx-auto max-w-6xl px-5 py-14">
@@ -307,20 +323,20 @@
                 <h2 class="text-2xl font-semibold">How it works</h2>
                 <ol class="mt-6 space-y-5">
                   <li class="flex items-start gap-3">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">1</span>
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-700 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">1</span>
                     <p class="text-sm text-gray-700 leading-6"><strong>Request an invitation</strong> with your name and graduation year.</p>
                   </li>
                   <li class="flex items-start gap-3">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">2</span>
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-700 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">2</span>
                     <p class="text-sm text-gray-700 leading-6"><strong>Get approved & set your password</strong> via a secure link emailed to you.</p>
                   </li>
                   <li class="flex items-start gap-3">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">3</span>
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-700 text-white text-sm font-semibold leading-none ring-2 ring-white shadow">3</span>
                     <p class="text-sm text-gray-700 leading-6"><strong>Unlock the dashboard</strong> to see event details, upload photos, and add your Memory Book story.</p>
                   </li>
                 </ol>
                 <div class="mt-8 flex flex-wrap gap-3">
-                  <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700">Request Invitation</a>
+                  <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-red-700 text-white px-5 py-2.5 text-sm font-medium hover:bg-red-800">Request Invitation</a>
                   <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-gray-300 text-gray-800 px-5 py-2.5 text-sm font-medium hover:bg-gray-50">Log In</a>
                 </div>
               </div>
@@ -385,8 +401,17 @@
   @endguest
 
   {{-- FOOTER --}}
-  <footer class="py-10 text-center text-xs text-gray-500">
-    © {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+  <footer class="border-t bg-white">
+    <div class="mx-auto max-w-6xl px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <p>© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+      @guest
+        <nav class="flex items-center gap-6">
+          <a href="{{ route('invite.create') }}" class="hover:text-gray-900 transition">Request Invite</a>
+          <a href="{{ route('login') }}" class="hover:text-gray-900 transition">Log In</a>
+          <a href="#faq" class="hover:text-gray-900 transition">FAQ</a>
+        </nav>
+      @endguest
+    </div>
   </footer>
 
   {{-- MODAL (Alpine) --}}

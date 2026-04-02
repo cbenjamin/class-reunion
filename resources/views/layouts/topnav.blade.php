@@ -35,8 +35,9 @@
         @auth
           {{-- Compact user menu --}}
           <div x-data="{open:false}" class="relative">
-            <button @click="open=!open" class="text-sm text-gray-700 hover:text-gray-900">
+            <button @click="open=!open" class="flex items-center gap-1.5 text-sm text-gray-700 hover:text-gray-900">
               {{ Str::of(auth()->user()->name)->words(2, '') }}
+              <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 transition-transform duration-150" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" @click.outside="open=false" x-transition
                  class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow">
