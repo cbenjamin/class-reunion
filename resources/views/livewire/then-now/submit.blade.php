@@ -1,7 +1,6 @@
-<div class="max-w-2xl mx-auto px-4 py-10">
+<x-page-header title="Submit Then & Now" description="Upload a photo from back in the day alongside one from today. One submission per classmate." />
 
-    <h1 class="text-2xl font-bold mb-1">Then &amp; Now</h1>
-    <p class="text-sm text-gray-500 mb-8">Upload a photo from back in the day alongside one from today. One submission per classmate.</p>
+<div class="max-w-2xl mx-auto px-4 py-10">
 
     @if(session('status'))
         <div class="mb-6 rounded-lg bg-green-50 text-green-800 px-4 py-3 text-sm">{{ session('status') }}</div>
@@ -63,7 +62,7 @@
                 @else
                     <label for="thenPhoto"
                            class="flex flex-col items-center justify-center h-44 rounded-lg border-2 border-dashed border-gray-300
-                                  cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
+                                  cursor-pointer hover:border-red-400 hover:bg-red-50 transition">
                         <i class="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
                         <span class="text-sm text-gray-500">Click to upload</span>
                         <span class="text-xs text-gray-400 mt-1">JPG, PNG · max 8MB</span>
@@ -71,7 +70,7 @@
                     </label>
                 @endif
 
-                <div wire:loading wire:target="thenPhoto" class="text-xs text-indigo-600 mt-1">Uploading…</div>
+                <div wire:loading wire:target="thenPhoto" class="text-xs text-red-600 mt-1">Uploading…</div>
                 @error('thenPhoto') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -87,7 +86,7 @@
                 @else
                     <label for="nowPhoto"
                            class="flex flex-col items-center justify-center h-44 rounded-lg border-2 border-dashed border-gray-300
-                                  cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
+                                  cursor-pointer hover:border-red-400 hover:bg-red-50 transition">
                         <i class="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
                         <span class="text-sm text-gray-500">Click to upload</span>
                         <span class="text-xs text-gray-400 mt-1">JPG, PNG · max 8MB</span>
@@ -95,7 +94,7 @@
                     </label>
                 @endif
 
-                <div wire:loading wire:target="nowPhoto" class="text-xs text-indigo-600 mt-1">Uploading…</div>
+                <div wire:loading wire:target="nowPhoto" class="text-xs text-red-600 mt-1">Uploading…</div>
                 @error('nowPhoto') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
@@ -105,7 +104,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Caption <span class="text-gray-400 font-normal">(optional)</span></label>
             <input type="text" wire:model="caption" maxlength="200"
                    placeholder="A fun fact or quick note…"
-                   class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                   class="w-full rounded-lg border-gray-300 text-sm shadow-sm focus:ring-red-500 focus:border-red-500">
             @error('caption') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
         </div>
 

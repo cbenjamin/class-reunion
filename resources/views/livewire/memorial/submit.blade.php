@@ -1,8 +1,6 @@
+<x-page-header title="Submit a Memorial" description="Share a tribute for a departed classmate. Submissions are reviewed before appearing on the memorial wall." />
+
 <div class="max-w-3xl mx-auto p-6">
-  <h1 class="text-2xl font-semibold">Submit a Memorial</h1>
-  <p class="text-sm text-gray-600 mt-1">
-    Share a tribute for a departed classmate. Submissions are reviewed before appearing on the memorial wall.
-  </p>
 
   @if (session('status'))
     <div class="mt-4 rounded bg-green-50 text-green-800 px-4 py-3 text-sm">{{ session('status') }}</div>

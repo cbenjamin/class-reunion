@@ -1,16 +1,15 @@
+<x-page-header title="In Memoriam" description="With love and remembrance of our departed classmates.">
+  <x-slot:actions>
+    <input type="text" wire:model.debounce.300ms="q"
+           class="rounded-lg border-0 bg-white/10 text-white placeholder-slate-400 text-sm px-3 py-1.5 focus:ring-2 focus:ring-white/20 w-48"
+           placeholder="Search name…">
+    @auth
+      <a href="{{ route('memorials.submit') }}" class="btn btn-secondary">Submit a Memorial</a>
+    @endauth
+  </x-slot:actions>
+</x-page-header>
+
 <div class="mx-auto max-w-6xl px-5 py-10">
-  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-semibold">In Memoriam</h1>
-      <p class="text-sm text-gray-600">With love and remembrance of our departed classmates.</p>
-    </div>
-    <div class="flex items-center gap-2">
-      <input type="text" wire:model.debounce.300ms="q" class="field w-64" placeholder="Search name or year">
-      @auth
-        <a href="{{ route('memorials.submit') }}" class="btn btn-secondary">Submit a Memorial</a>
-      @endauth
-    </div>
-  </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
     @foreach($memorials as $m)

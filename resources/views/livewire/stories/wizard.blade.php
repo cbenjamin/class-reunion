@@ -1,11 +1,11 @@
-<div class="max-w-3xl mx-auto px-4 py-10" x-data="storyWizard()">
-  <h1 class="text-2xl font-bold mb-1">Share a Memory</h1>
-  <p class="text-gray-600 mb-6">A few quick prompts. You can choose to appear as “Anonymous”.</p>
+<x-page-header title=”Share a Memory” description='A few quick prompts — you can choose to appear as “Anonymous”.' />
+
+<div class=”max-w-3xl mx-auto px-4 py-10” x-data=”storyWizard()”>
 
   {{-- Progress --}}
   <div class="mb-6">
     <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-      <div class="h-full bg-indigo-600 transition-all" :style="`width: ${step*33.33}%`"></div>
+      <div class="h-full bg-red-700 transition-all" :style="`width: ${(step/3)*100}%`"></div>
     </div>
     <div class="mt-2 text-xs text-gray-500" x-text="`Step ${step} of 3`"></div>
   </div>
@@ -24,7 +24,7 @@
     <div class="flex justify-end gap-2 pt-4">
       <button type="button"
               @click="next()"
-              class="px-4 py-2 rounded bg-indigo-600 text-white disabled:opacity-50"
+              class="btn btn-primary disabled:opacity-50"
               :disabled="busy">
         <span x-show="!busy">Next</span>
         <span x-show="busy">Checking…</span>
@@ -53,7 +53,7 @@
       <button type="button" @click="back()" class="px-4 py-2 rounded border">Back</button>
       <button type="button"
               @click="next()"
-              class="px-4 py-2 rounded bg-indigo-600 text-white disabled:opacity-50"
+              class="btn btn-primary disabled:opacity-50"
               :disabled="busy">
         <span x-show="!busy">Next</span>
         <span x-show="busy">Checking…</span>
@@ -81,7 +81,7 @@
       <button type="button" @click="back()" class="px-4 py-2 rounded border">Back</button>
       <button type="button"
               @click="submit()"
-              class="px-4 py-2 rounded bg-green-600 text-white disabled:opacity-50"
+              class="btn btn-primary disabled:opacity-50"
               :disabled="busy">
         <span x-show="!busy">Submit Story</span>
         <span x-show="busy">Submitting…</span>
