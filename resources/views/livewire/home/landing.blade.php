@@ -182,7 +182,7 @@
               <h2 class="bubble-title">Photos</h2>
               <p class="bubble-sub">Approved photos from classmates</p>
             </div>
-            <a href="{{ route('photos.index') }}" class="hidden sm:inline-flex items-center rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700">
+            <a href="{{ route('photos.index') }}" class="hidden sm:inline-flex items-center rounded-lg bg-red-700 text-white px-4 py-2 text-sm font-medium hover:bg-red-800">
               Upload Your Photos
             </a>
           </div>
@@ -393,7 +393,7 @@
       </div>
 
       <div class="mt-8 text-center">
-        <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700">
+        <a href="{{ route('invite.create') }}" class="inline-flex items-center rounded-lg bg-red-700 text-white px-5 py-2.5 text-sm font-medium hover:bg-red-800">
           Request Invitation
         </a>
       </div>
