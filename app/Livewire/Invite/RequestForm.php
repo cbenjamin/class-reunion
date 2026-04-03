@@ -9,7 +9,9 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\AdminInviteAlert;
 use App\Mail\InviteRequestReceived;
+use App\Models\EventSetting;
 
 #[Layout('components.layouts.auth')]
 class RequestForm extends Component
@@ -64,15 +66,31 @@ class RequestForm extends Component
 
         $this->submitted = true;
 
+        $eventName = config('app.name');
+
+        // Acknowledgment email to the applicant
         try {
             Mail::to($this->email)->send(
-                new InviteRequestReceived(
-                    name: $this->full_name,
-                    eventName: config('app.name')
-                )
+                new InviteRequestReceived(name: $this->full_name, eventName: $eventName)
             );
         } catch (\Throwable $e) {
             \Log::warning('Invite ack email failed', ['error' => $e->getMessage()]);
+        }
+
+        // Alert email to the configured contact address
+        try {
+            $settings = EventSetting::query()->first();
+            $contactEmail = $settings?->contact_email;
+
+            if ($contactEmail) {
+                $inviteRequest = InvitationRequest::where('email', $this->email)->latest()->first();
+
+                Mail::to($contactEmail)->send(
+                    new AdminInviteAlert(request: $inviteRequest, eventName: $eventName)
+                );
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Admin invite alert email failed', ['error' => $e->getMessage()]);
         }
     }
 

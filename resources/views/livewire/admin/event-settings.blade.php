@@ -70,6 +70,19 @@
       @error('details') <p class="help">{{ $message }}</p> @enderror
     </div>
 
+    {{-- Contact / Notifications --}}
+    <div class="bg-white shadow rounded-xl p-6 space-y-3">
+      <div>
+        <h3 class="font-semibold">Notifications</h3>
+        <p class="text-sm text-gray-600 mt-0.5">This email address will receive a notification whenever someone submits a new invite request.</p>
+      </div>
+      <div>
+        <label class="label">Contact Email</label>
+        <input type="email" wire:model.defer="contact_email" class="field" placeholder="admin@example.com">
+        @error('contact_email') <p class="help">{{ $message }}</p> @enderror
+      </div>
+    </div>
+
     <div class="bg-white shadow rounded-xl p-6">
       <div class="flex items-start justify-between gap-4">
         <div>

@@ -18,33 +18,36 @@ class EventSettings extends Component
     public ?string $address = null;
     public ?string $details = null;      // HTML from Quill
     public bool $rsvp_enabled = false;
+    public ?string $contact_email = null;
 
     public function mount(): void
     {
         $s = EventSetting::query()->first();
 
         if ($s) {
-            $this->id         = $s->id;
-            $this->event_name = $s->event_name;
-            $this->event_date = optional($s->event_date)->toDateString();
-            $this->event_time = $s->event_time;
-            $this->venue      = $s->venue;
-            $this->address    = $s->address;
-            $this->details    = $s->details;
-            $this->rsvp_enabled = (bool) ($s->rsvp_enabled ?? false);
+            $this->id            = $s->id;
+            $this->event_name    = $s->event_name;
+            $this->event_date    = optional($s->event_date)->toDateString();
+            $this->event_time    = $s->event_time;
+            $this->venue         = $s->venue;
+            $this->address       = $s->address;
+            $this->details       = $s->details;
+            $this->rsvp_enabled  = (bool) ($s->rsvp_enabled ?? false);
+            $this->contact_email = $s->contact_email;
         }
     }
 
     public function rules(): array
     {
         return [
-            'event_name'   => ['nullable', 'string', 'max:120'],
-            'event_date'   => ['nullable', 'date'],
-            'event_time'   => ['nullable', 'string', 'max:120'],
-            'venue'        => ['nullable', 'string', 'max:160'],
-            'address'      => ['nullable', 'string', 'max:240'],
-            'details'      => ['nullable', 'string'],
+            'event_name'    => ['nullable', 'string', 'max:120'],
+            'event_date'    => ['nullable', 'date'],
+            'event_time'    => ['nullable', 'string', 'max:120'],
+            'venue'         => ['nullable', 'string', 'max:160'],
+            'address'       => ['nullable', 'string', 'max:240'],
+            'details'       => ['nullable', 'string'],
             'rsvp_enabled'  => ['required', 'boolean'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
         ];
     }
 
@@ -56,7 +59,8 @@ class EventSettings extends Component
             ? EventSetting::findOrFail($this->id)
             : new EventSetting();
 
-        $data['rsvp_enabled'] = (bool) $this->rsvp_enabled;
+        $data['rsvp_enabled']  = (bool) $this->rsvp_enabled;
+        $data['contact_email'] = $this->contact_email ?: null;
 
         $s->fill($data);
         $s->save();
