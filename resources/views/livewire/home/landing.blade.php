@@ -404,13 +404,16 @@
   <footer class="border-t bg-white">
     <div class="mx-auto max-w-6xl px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
       <p>© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
-      @guest
-        <nav class="flex items-center gap-6">
+      <nav class="flex flex-wrap items-center justify-center gap-5">
+        @guest
           <a href="{{ route('invite.create') }}" class="hover:text-gray-900 transition">Request Invite</a>
           <a href="{{ route('login') }}" class="hover:text-gray-900 transition">Log In</a>
           <a href="#faq" class="hover:text-gray-900 transition">FAQ</a>
-        </nav>
-      @endguest
+          <span class="text-gray-200">|</span>
+        @endguest
+        <a href="{{ route('privacy') }}" class="hover:text-gray-900 transition">Privacy Policy</a>
+        <a href="{{ route('terms') }}" class="hover:text-gray-900 transition">Terms of Use</a>
+      </nav>
     </div>
   </footer>
 

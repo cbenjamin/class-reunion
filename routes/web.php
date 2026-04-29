@@ -67,6 +67,10 @@ Route::get('/', Landing::class)->name('home');
 
 //Route::redirect('/', '/request-invite');
 
+// Static public pages
+Route::view('/privacy', 'pages.privacy')->name('privacy');
+Route::view('/terms', 'pages.terms')->name('terms');
+
 // Invitation flow (public)
 Route::get('/request-invite', RequestForm::class)->name('invite.create');
 Route::get('/invite/approve/{token}', Consume::class)->name('invite.consume');

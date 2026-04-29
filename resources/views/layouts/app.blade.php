@@ -52,8 +52,23 @@
 
   {{-- Main content. Add left padding only when sidebar is present. --}}
   <main class="min-h-screen transition-[padding] {{ $useDrawer ? '' : 'md:pl-72' }}">
-    {{ $slot }}
+    @hasSection('content')
+      @yield('content')
+    @else
+      {{ $slot ?? '' }}
+    @endif
   </main>
+
+  {{-- Global footer --}}
+  <footer class="transition-[padding] {{ $useDrawer ? '' : 'md:pl-72' }} border-t border-gray-200 bg-white">
+    <div class="mx-auto max-w-6xl px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
+      <p>© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+      <nav class="flex items-center gap-4">
+        <a href="{{ route('privacy') }}" class="hover:text-gray-600 transition">Privacy Policy</a>
+        <a href="{{ route('terms') }}" class="hover:text-gray-600 transition">Terms of Use</a>
+      </nav>
+    </div>
+  </footer>
 
   @livewireScripts
   @stack('scripts')
