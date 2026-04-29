@@ -17,7 +17,18 @@
 
       <div>
         <label class="label">Date</label>
-        <input type="date" wire:model.defer="event_date" class="field">
+        <div class="flex items-center gap-2">
+          <input type="date" wire:model.defer="event_date" class="field flex-1">
+          @if($event_date)
+            <button type="button" wire:click="$set('event_date', null)"
+                    title="Clear date"
+                    class="shrink-0 text-gray-400 hover:text-red-600 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          @endif
+        </div>
         @error('event_date') <p class="help">{{ $message }}</p> @enderror
       </div>
 
